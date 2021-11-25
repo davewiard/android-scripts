@@ -1,0 +1,14 @@
+#!/bin/bash
+
+find -name '*.ogg'			\
+	-exec vorbiscomment		\
+		-d "DESCRIPTION"	\
+		-d "PURL"		\
+		-d "SYNOPSIS"		\
+		-d "SONG"		\
+		-d "RELEASE DATE"	\
+		-d "LABELS"		\
+		-d "LANGUAGE"		\
+		-d "ENCODER"		\
+		{} \;
+

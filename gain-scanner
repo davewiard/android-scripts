@@ -1,0 +1,57 @@
+#!/bin/bash
+
+music_path=$HOME/storage/music
+
+function should_scan_all()
+{
+  if [[ -n ${PWD##$music_path/} && ${PWD##$music_path/} != $PWD ]]; then
+    return 1
+  fi
+
+  cd $music_path
+  return 0
+}
+
+function scan_mp3()
+{
+  if should_scan_all; then
+    scan_mp3_recursively
+    return
+  fi
+
+  find . -maxdepth 1               \
+	 -name '*.mp3'             \
+         -exec mp3gain -s r -a {} \;
+}
+
+function scan_mp3_recursively()
+{
+  find . -name '*.mp3'             \
+       -exec mp3gain -s r -a {} \;
+}
+
+function scan_ogg()
+{
+  if should_scan_all; then
+    scan_ogg_recursively
+    return
+  fi
+
+  find . -maxdepth 1                     \
+         -name '*.ogg'                   \
+         -exec vorbisgain -c {} \;       \
+         -exec vorbisgain -q -a -n {} \; \
+         -exec gain-show {} \;
+}
+
+function scan_ogg_recursively()
+{
+  find . -name '*.ogg'           \
+       -exec vorbisgain -c {} \; \
+       -exec vorbisgain -q -a -n {} \;
+}
+
+
+scan_ogg
+scan_mp3
+
