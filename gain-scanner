@@ -1,10 +1,15 @@
 #!/bin/bash
 
+download_music_path=$HOME/storage/downloads/Music
 music_path=$HOME/storage/music
 
 function should_scan_all()
 {
   if [[ -n ${PWD##$music_path/} && ${PWD##$music_path/} != $PWD ]]; then
+    return 1
+  fi
+
+  if [[ -n ${PWD##$download_music_path/} && ${PWD##$download_music_path/} != $PWD ]]; then
     return 1
   fi
 
