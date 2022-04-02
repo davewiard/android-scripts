@@ -1,0 +1,4 @@
+#!/usr/bin/zsh
+
+/data/data/com.termux/files/usr/bin/python ./wemo-control.py $@
+read ans
