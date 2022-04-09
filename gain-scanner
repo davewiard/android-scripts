@@ -56,7 +56,25 @@ function scan_ogg_recursively()
        -exec vorbisgain -q -a -n {} \;
 }
 
+function scan_opus()
+{
+  if should_scan_all; then
+    scan_opus_recursively
+    return
+  fi
 
+  find . -maxdepth 1                     \
+         -name '*.opus'                  \
+         -exec r128gain {} \;
+}
+
+function scan_ogg_recursively()
+{
+  r128gain -r .
+}
+
+
+scan_opus
 scan_ogg
 scan_mp3
 
