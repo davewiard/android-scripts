@@ -107,12 +107,15 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+unalias gdt
+
 alias dm='cd ~/storage/downloads/Music'
-alias ls='ls -aF --color=tty --group-directories-first'
-alias ll='ls -alF --color=tty --group-directories-first'
-alias m='cd ~/storage/music'
+alias gdt='git difftool'
 alias gsc='gain-scanner'
 alias gsh='gain-show'
+alias ll='ls -alF --color=tty --group-directories-first'
+alias ls='ls -aF --color=tty --group-directories-first'
+alias m='cd ~/storage/music'
 alias mf='/data/data/com.termux/files/home/sources/flac-1.3.3/src/metaflac/metaflac'
 alias py='python3'
 alias vc='vorbiscomment'
