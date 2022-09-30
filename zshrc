@@ -9,7 +9,7 @@ fi
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -77,7 +77,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git colorize pip python)
+plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -107,9 +107,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-
-export PATH=$PATH:$HOME/bin
-
 alias dm='cd ~/storage/downloads/Music'
 alias ls='ls -aF --color=tty --group-directories-first'
 alias ll='ls -alF --color=tty --group-directories-first'
@@ -117,6 +114,7 @@ alias m='cd ~/storage/music'
 alias gsc='gain-scanner'
 alias gsh='gain-show'
 alias mf='/data/data/com.termux/files/home/sources/flac-1.3.3/src/metaflac/metaflac'
+alias py='python3'
 alias vc='vorbiscomment'
 alias vg='vorbisgain'
 alias vgsc='vim ~/bin/gain-scanner'
@@ -124,13 +122,13 @@ alias vgsh='vim ~/bin/gain-show'
 
 function runpy()
 {
-  src_path=~/storage/git/android-scripts
-  dst_path=~/bin
-  
-  cp $src_path/$1 $dst_path/.	&& \
-    chmod 700 $dst_path/$1	&& \
-    clear			&& \
-    DEBUG=1 $dst_path/$1 "${(@)@[2,-1]}"
+    src_path=~/storage/git/android-scripts
+    dst_path=~/bin
+
+    cp $src_path/$1 $dst_path/.		&& \
+	    chmod 700 $dst_path/$1	&& \
+	    clear			&& \
+	    DEBUG=1 $dst_path/$1 "${(@)@[2,-1]}"
 }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
