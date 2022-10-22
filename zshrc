@@ -125,7 +125,7 @@ alias vgsh='vim ~/bin/gain-show'
 
 function runpy()
 {
-    src_path=~/storage/git/android-scripts
+    src_path=~/git/android-scripts
     dst_path=~/bin
 
     cp $src_path/$1 $dst_path/.		&& \
