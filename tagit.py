@@ -6,6 +6,9 @@ import logging
 import ffmpeg
 import mutagen
 
+from pathlib import Path
+
+
 # 1. [done] get list of all audio files in CWD
 # 2. [done] get list of all image files in CWD
 # 3. [done] prompt user to enter all desired tags
@@ -67,6 +70,13 @@ def get_comment():
   return input('Comment: ')
 
 
+def get_cover_art(album):
+  if Path(album + '.jpg').exists():
+    return album + '.jpg'
+
+  return None
+
+
 def get_genre():
   return input('Genre: ')
 
@@ -99,7 +109,8 @@ def get_tags():
   tags['year'] = get_year()
   tags['genre'] = get_genre()
   tags['comment'] = get_comment()
-  tags['lyrics'] = get_lyrics()
+  #tags['lyrics'] = get_lyrics()
+  tags['album_art'] = get_cover_art(tags['album'])
   
   return tags
 
@@ -126,7 +137,15 @@ def process_one_file(filename):
   tags = get_tags()
   print(tags)
   update_metadata(filename, tags)
+  rename_file(filename, tags)
   return None
+
+
+def rename_file(filename, tags):
+    existing = Path(filename)
+    if existing.stem != tags['title']:
+        existing.rename(Path(existing.parent, tags['title'] + existing.suffix))
+    return None
 
 
 def update_metadata(filename, tags):
@@ -141,32 +160,41 @@ def update_metadata(filename, tags):
 
 
 def update_mp3_metadata(mf, tags):
-  mf.pop('TIT2')
+  mf.delete()
+  mf.save()
+
   mf.tags.add(mutagen.id3.TIT2(encoding=3, text=tags['title']))
-
-  mf.pop('TALB')
   mf.tags.add(mutagen.id3.TALB(encoding=3, text=tags['album']))
-
-  mf.pop('TPE1')
   mf.tags.add(mutagen.id3.TPE1(encodimg=1, text=tags['artist']))
-
-  mf.pop('TPE2')
   mf.tags.add(mutagen.id3.TPE2(encodimg=1, text=tags['album_artist']))
-  
-  mf.pop('TDRC')
   mf.tags.add(mutagen.id3.TDRC(encoding=0, text=tags['year']))
-
-  mf.pop('TCON')
   mf.tags.add(mutagen.id3.TCON(encoding=0, text=tags['genre']))
-
-  mf.pop('COMM:ID3v1 Comment:eng')
-  mf.pop('COMM::XXX')
   mf.tags.add(mutagen.id3.COMM(encoding=1, lang='XXX', desc='', text=tags['comment']))
+  # mf.tags.add(mutagen.id3.TXXX(encoding=1, desc='LYRICS', text=tags['lyrics']))
 
-  mf.pop('TXXX:LYRICS')
-  mf.tags.add(mutagen.id3.TXXX(encoding=1, desc='LYRICS', text=tags['lyrics']))
+  if tags['album_art']:
+    with open(tags['album_art'], 'rb') as albumart:
+      mf.tags.add(
+        mutagen.id3.APIC(
+          encoding=3,
+          mime='image/jpeg',
+          type=3,
+          desc=u'Cover',
+          data=albumart.read()
+        )
+      )
   
   mf.save()
+
+
+def update_opus_metadata(filename, tags):
+    print('Opus tagging not yot yet supported')
+    return None
+
+
+def update_vorbis_metadata(filename, tags):
+    print('Vorbis tagging not yet supported')
+    return None
 
 
 if __name__	== '__main__':
