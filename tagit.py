@@ -7,6 +7,8 @@ import base64
 import ffmpeg
 import mutagen
 import subprocess
+import glob
+import azlyrics
 
 from pathlib import Path
 
@@ -117,8 +119,17 @@ class AudioFile:
   def get_new_tags(self):
     artist_dir_name = os.getcwd().split(os.sep)[-1]
 
-    self._new_tags[AudioFile._LABEL_TITLE] = self._get_input(AudioFile._LABEL_TITLE.title(), self._old_tags[AudioFile._LABEL_TITLE]).title()
-    self._new_tags[AudioFile._LABEL_ALBUM] = self._get_input(AudioFile._LABEL_ALBUM.title(), self._old_tags[AudioFile._LABEL_ALBUM]).title()
+    if self._old_tags[AudioFile._LABEL_TITLE]:
+      self._new_tags[AudioFile._LABEL_TITLE] = self._get_input(AudioFile._LABEL_TITLE.title(), self._old_tags[AudioFile._LABEL_TITLE]).title()
+    else:
+      self._new_tags[AudioFile._LABEL_TITLE] = self._get_input(AudioFile._LABEL_TITLE.title(), Path(self.filename).stem)
+
+    image_files = glob.glob('*.jpg')
+    if not self._old_tags[AudioFile._LABEL_ALBUM] and len(image_files) == 1:
+      self._new_tags[AudioFile._LABEL_ALBUM] = self._get_input(AudioFile._LABEL_ALBUM.title(), Path(image_files[0]).stem).title()
+    else:
+      self._new_tags[AudioFile._LABEL_ALBUM] = self._get_input(AudioFile._LABEL_ALBUM.title(), self._old_tags[AudioFile._LABEL_ALBUM]).title()
+
 
     if artist_dir_name == self._old_tags[AudioFile._LABEL_ARTIST]:
       self._new_tags[AudioFile._LABEL_ARTIST] = self._get_input(AudioFile._LABEL_ARTIST.title(), self._old_tags[AudioFile._LABEL_ARTIST])
@@ -133,7 +144,18 @@ class AudioFile:
     self._new_tags[AudioFile._LABEL_DATE] = self._get_input(AudioFile._LABEL_DATE.title(), self._old_tags[AudioFile._LABEL_DATE])
     self._new_tags[AudioFile._LABEL_GENRE] = self._get_input(AudioFile._LABEL_GENRE.title(), self._old_tags[AudioFile._LABEL_GENRE])
     self._new_tags[AudioFile._LABEL_COMMENT] = self._get_input(AudioFile._LABEL_COMMENT.title(), self._old_tags[AudioFile._LABEL_COMMENT])
-    self._new_tags[AudioFile._LABEL_LYRICS] = self._old_tags[AudioFile._LABEL_LYRICS]
+
+    if self._old_tags[AudioFile._LABEL_LYRICS]:
+      self._new_tags[AudioFile._LABEL_LYRICS] = self._old_tags[AudioFile._LABEL_LYRICS]
+    else:
+      print('Fetching lyrics ...')
+      lyrics = None
+      az = azlyrics.Azlyrics(self._new_tags[AudioFile._LABEL_ARTIST], self._new_tags[AudioFile._LABEL_TITLE])
+      if az:
+        raw_lyrics = az.get_lyrics()
+        lyrics = az.format_lyrics(raw_lyrics).lstrip().rstrip()
+
+      self._new_tags[AudioFile._LABEL_LYRICS] = lyrics
 
     self._new_tags[AudioFile._LABEL_ALBUM_ART] = self.get_new_album_art()
 
@@ -269,7 +291,7 @@ class AudioFile:
 
 
   def rename_file(self):
-    print(self._type)
+    #print(self._type)
     existing = Path(self.filename)
     new_filename = None
 
