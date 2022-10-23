@@ -3,8 +3,10 @@
 import os
 import sys
 import logging
+import base64
 import ffmpeg
 import mutagen
+import subprocess
 
 from pathlib import Path
 
@@ -15,8 +17,10 @@ from pathlib import Path
 #    a. [done] title, artist, album artist, genre, year, comment, lyrics, album art filename, rating?
 #    b. [done] try to auto-detect artist from parent directory name
 #    c. [done] offer artist name as default album artist
-# 4. update metadata tags
-# 5. rename file if needing to be renamed
+# 4. [done] update metadata tags
+# 5. [done] rename file if needing to be renamed
+# 6. [done] upsert replaygain tags
+
 
 def get_audio_fileset(fileset):
   result = []
@@ -109,7 +113,6 @@ def get_tags():
   tags['year'] = get_year()
   tags['genre'] = get_genre()
   tags['comment'] = get_comment()
-  #tags['lyrics'] = get_lyrics()
   tags['album_art'] = get_cover_art(tags['album'])
   
   return tags
@@ -142,24 +145,46 @@ def process_one_file(filename):
 
 
 def rename_file(filename, tags):
-    existing = Path(filename)
-    if existing.stem != tags['title']:
-        existing.rename(Path(existing.parent, tags['title'] + existing.suffix))
+  ext = None
+  mf = mutagen.File(filename)
+  mft = mf.info.pprint().split(',')[0]
+  if mft == 'MPEG 1 layer 3':
+    ext = '.mp3'
+  elif mft == 'Ogg Opus':
+    ext = '.opus'
+  elif mft == 'Ogg Vorbis':
+    ext = '.ogg'
+    
+  if not ext:
+    print('Unknown codec ' + mft)
     return None
+
+  existing = Path(filename)
+  if existing.name != tags['title'] + ext:
+    existing.rename(Path(existing.parent, tags['title'] + ext))
 
 
 def update_metadata(filename, tags):
   mf = mutagen.File(filename)
+  # print(mf)
   mft = mf.info.pprint().split(',')[0]
   if mft == 'MPEG 1 layer 3':
     update_mp3_metadata(mf, tags)
   elif mft == 'Ogg Opus':
     update_opus_metadata(mf, tags)
   elif mft == 'Ogg Vorbis':
-    update_vorbis_metdata(mf, tags)
+    update_vorbis_metadata(mf, tags)
+
+  update_replaygain(filename)
 
 
 def update_mp3_metadata(mf, tags):
+  # save existing lyrics if present 
+  try:
+    tags['lyrics'] = mf.tags['TXXX:LYRICS'].text[0]
+  except KeyError:
+    tags['lyrics'] = None
+    
   mf.delete()
   mf.save()
 
@@ -170,31 +195,94 @@ def update_mp3_metadata(mf, tags):
   mf.tags.add(mutagen.id3.TDRC(encoding=0, text=tags['year']))
   mf.tags.add(mutagen.id3.TCON(encoding=0, text=tags['genre']))
   mf.tags.add(mutagen.id3.COMM(encoding=1, lang='XXX', desc='', text=tags['comment']))
-  # mf.tags.add(mutagen.id3.TXXX(encoding=1, desc='LYRICS', text=tags['lyrics']))
+  if tags['lyrics']:
+    mf.tags.add(mutagen.id3.TXXX(encoding=1, desc='LYRICS', text=tags['lyrics']))
 
   if tags['album_art']:
     with open(tags['album_art'], 'rb') as albumart:
       mf.tags.add(
         mutagen.id3.APIC(
-          encoding=3,
-          mime='image/jpeg',
-          type=3,
-          desc=u'Cover',
-          data=albumart.read()
+          encoding = 3,
+          mime = 'image/jpeg',
+          type = mutagen.id3.PictureType.COVER_FRONT,
+          desc = u'Cover',
+          data = albumart.read()
         )
       )
   
   mf.save()
 
 
-def update_opus_metadata(filename, tags):
-    print('Opus tagging not yot yet supported')
-    return None
+def update_opus_metadata(mf, tags):
+  # save existing lyrics if present
+  try:
+    tags['lyrics'] = mf['LYRICS']
+  except KeyError:
+    tags['lyrics'] = None
+
+  mf.delete()
+  mf.save()
+
+  mf['TITLE'] = tags['title']
+  mf['ALBUM'] = tags['album']
+  mf['ARTIST'] = tags['artist']
+  mf['ALBUMARTIST'] = tags['album_artist']
+  mf['DATE'] = tags['year']
+  mf['GENRE'] = tags['genre']
+  if tags['lyrics']:
+    mf['LYRICS'] = tags['lyrics']
+  
+  if tags['album_art']:
+    with open(tags['album_art'], 'rb') as albumart:
+      album_art_data = albumart.read()
+
+    picture = mutagen.flac.Picture()
+    picture.data = album_art_data
+    picture.type = mutagen.id3.PictureType.COVER_FRONT
+    picture.mime = 'image/jpeg'
+    encoded_data = base64.b64encode(picture.write())
+    mf['METADATA_BLOCK_PICTURE'] = encoded_data.decode('ascii')
+
+  mf.save()
 
 
-def update_vorbis_metadata(filename, tags):
-    print('Vorbis tagging not yet supported')
-    return None
+def update_replaygain(filename):
+  process = subprocess.run(['r128gain', filename])
+  if process.returncode != 0:
+    print('Failed to upsert replaygain tags')
+
+
+def update_vorbis_metadata(mf, tags):
+  # save existing lyrics if present
+  try:
+    tags['lyrics'] = mf['LYRICS']
+  except KeyError:
+    tags['lyrics'] = None
+  
+  mf.delete()
+  mf.save()
+
+  mf['TITLE'] = tags['title']
+  mf['ALBUM'] = tags['album']
+  mf['ARTIST'] = tags['artist']
+  mf['ALBUMARTIST'] = tags['album_artist']
+  mf['DATE'] = tags['year']
+  mf['GENRE'] = tags['genre']
+  if tags['lyrics']:
+    mf['LYRICS'] = tags['lyrics']
+  
+  if tags['album_art']:
+    with open(tags['album_art'], 'rb') as albumart:
+      album_art_data = albumart.read()
+
+    picture = mutagen.flac.Picture()
+    picture.data = album_art_data
+    picture.type = mutagen.id3.PictureType.COVER_FRONT
+    picture.mime = 'image/jpeg'
+    encoded_data = base64.b64encode(picture.write())
+    mf['METADATA_BLOCK_PICTURE'] = encoded_data.decode('ascii')
+
+  mf.save()
 
 
 if __name__	== '__main__':
