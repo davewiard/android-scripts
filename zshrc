@@ -107,6 +107,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+export PYTHONPATH=$HOME/git/android-scripts
+
 unalias gdt
 
 alias dm='cd ~/storage/downloads/Music'
