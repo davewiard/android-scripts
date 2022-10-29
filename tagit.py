@@ -7,6 +7,7 @@ import base64
 import ffmpeg
 import mutagen
 import subprocess
+import requests
 import glob
 import azlyrics
 from airtable import airtable
@@ -15,7 +16,94 @@ from pathlib import Path
 import tagit_config
 
 
-class AudioFile:
+class Tags():
+  def __init__(self):
+    self._title = None
+    self._artist = None
+    self._album = None
+    self._albumartist = None
+    self._date = None
+    self._genre = None
+    self._comment = None
+    self._lyrics = None
+    self._album_art = []
+
+  @property
+  def title(self):
+    return self._title
+
+  @title.setter
+  def title(self, value):
+    self._title = value
+
+  @property
+  def album(self):
+    return self._album
+
+  @album.setter
+  def album(self, value):
+    self._album = value
+
+  @property
+  def albumartist(self):
+    return self._albumartist
+
+  @album.setter
+  def albumartist(self, value):
+    self._albumartist = value
+
+  @property
+  def date(self):
+    return self._date
+
+  @date.setter
+  def date(self, value):
+    self._date = value
+
+  @property
+  def genre(self):
+    return self._genre
+
+  @genre.setter
+  def genre(self, value):
+    self._genre = value
+
+  @property
+  def comment(self):
+    return self._comment
+
+  @comment.setter
+  def comment(self, value):
+    self._comment = value
+
+  @property
+  def lyrics(self):
+    return self._lyrics
+
+  @lyrics.setter
+  def lyrics(self, value):
+    self._lyrics = value
+
+  @property
+  def album_art(self):
+    return self._album_art
+
+  @album_art.setter
+  def album_art(self, value):
+    self._album_art = value
+
+
+class Metadata():
+
+  _FIELD_TITLE = 'Title'
+  _FIELD_ARTIST = 'Artist'
+  _FIELD_ALBUM = 'Album'
+  _FIELD_DATE = 'Date'
+  _FIELD_GENRE = 'Genre'
+  _FIELD_COMMENT = 'Comment'
+  _FIELD_ALBUM_ART = 'Album Art'
+  _FIELD_URL = 'url'
+
   _TYPE_MP3 = 'mp3'
   _TYPE_OGG_OPUS = 'opus'
   _TYPE_OGG_VORBIS = 'vorbis'
@@ -26,6 +114,91 @@ class AudioFile:
   _EXT_OGG_VORBIS = '.ogg'
   
   _MIME_IMAGE_JPEG = 'image/jpeg'
+
+
+
+class AirtableData(Metadata):
+
+  @property
+  def table(self):
+    return self._table;
+
+
+  @property
+  def record(self):
+    return self._record;
+
+
+  @property
+  def title(self):
+    return self._get_field(self._record, AirtableData._FIELD_TITLE).rstrip()
+
+
+  @property
+  def artist(self):
+    return self._get_field(self._record, AirtableData._FIELD_ARTIST).rstrip()
+
+
+  @property
+  def album(self):
+    value = self._get_field(self._record, AirtableData._FIELD_ALBUM)
+    if value:
+      return value.rstrip()
+
+
+  @property
+  def date(self):
+    value = self._get_field(self._record, AirtableData._FIELD_DATE)
+    if value:
+      return str(value)
+
+
+  @property
+  def genre(self):
+    value = self._get_field(self._record, AirtableData._FIELD_GENRE)
+    if value:
+      return value.rstrip()
+
+
+  @property
+  def comment(self):
+    value = self._get_field(self._record, AirtableData._FIELD_COMMENT)
+    if value:
+      return value.rstrip()
+
+
+  @property
+  def album_art_url(self):
+    album_art = self._get_field(self._record, AirtableData._FIELD_ALBUM_ART)
+    if album_art:
+      return album_art[0][AirtableData._FIELD_URL]
+
+
+  def _get_field(self, record, field):
+    if record and record['fields'].get(field):
+      return record['fields'].get(field)
+
+
+  def __init__(self, artist, title):
+    self._table = 'Metadata'
+    self._record = None
+
+    at = airtable.Airtable(tagit_config._AIRTABLE_BASE_ID_MUSIC,
+                           tagit_config._AIRTABLE_API_KEY)
+
+    print('Fetching Airtable data...')
+    records = at.get(self._table)
+    #print(records)
+    for record in records['records']:
+      if self._get_field(record, AirtableData._FIELD_ARTIST) == artist and     \
+         self._get_field(record, AirtableData._FIELD_TITLE) == title:
+        self._record = record
+        #print(record)
+        break
+
+
+
+class AudioFile(Metadata):
   
   _LABEL_TITLE = 'TITLE'
   _LABEL_ALBUM = 'ALBUM'
@@ -51,9 +224,10 @@ class AudioFile:
 
   def __init__(self, filename):
     self._type = None
-    self._old_tags = {}
-    self._new_tags = {}
-    self._airtable_record = None
+    self._atd = None
+
+    self.oldTags = Tags()
+    self.newTags = Tags()
 
     self.filename = filename
     self.mf = mutagen.File(self.filename)
@@ -74,26 +248,6 @@ class AudioFile:
 
     self._type = value
 
-
-  @property
-  def old_tags(self):
-    return self._old_tags
-
-
-  @old_tags.setter
-  def old_tags(self, tags):
-    self._old_tags = tags
-    
-
-  @property
-  def new_tags(self):
-    return self._new_tags
-
-
-  @new_tags.setter
-  def new_tags(self, tags):
-    self._new_tags = tags
-    
 
   def _set_file_type(self):
     mft = self.mf.info.pprint().split(',')[0]
@@ -122,14 +276,12 @@ class AudioFile:
   def _get_new_tags_title(self):
     default = None
 
-    if self._old_tags[AudioFile._LABEL_TITLE]:
-      default = self._old_tags[AudioFile._LABEL_TITLE].title()
+    if self.oldTags.title:
+      default = self.oldTags.title
     else:
       default = Path(self.filename).stem
-    
-    self._new_tags[AudioFile._LABEL_TITLE] = self._get_input(
-                                                    AudioFile._LABEL_TITLE.title(),
-                                                    default)
+
+    self.newTags.title = self._get_input(AudioFile._LABEL_TITLE.title(), default)
 
 
   def _get_new_tags_artist(self):
@@ -137,22 +289,17 @@ class AudioFile:
 
     artist_dir_name = os.getcwd().split(os.sep)[-1]
 
-    if artist_dir_name == self._old_tags[AudioFile._LABEL_ARTIST]:
-      default = self._old_tags[AudioFile._LABEL_ARTIST]
+    if artist_dir_name == self.oldTags.artist:
+      default = self.oldTags.artist
     else:
       default = artist_dir_name
 
-    self._new_tags[AudioFile._LABEL_ARTIST] = self._get_input(
-                                                    AudioFile._LABEL_ARTIST.title(),
-                                                    default)
+    self.newTags.artist = self._get_input(AudioFile._LABEL_ARTIST.title(), default)
 
 
   def _get_new_tags_albumartist(self):
-    default = self._new_tags[AudioFile._LABEL_ARTIST]
-
-    self._new_tags[AudioFile._LABEL_ALBUMARTIST] = self._get_input(
-                                                      AudioFile._LABEL_ALBUMARTIST.title(),
-                                                      default)
+    default = self.newTags.artist
+    self.newTags.albumartist = self._get_input(AudioFile._LABEL_ALBUMARTIST.title(), default)
 
 
   def _get_new_tags_album(self):
@@ -160,55 +307,47 @@ class AudioFile:
     
     image_fileset = glob.glob('*.jpg')
 
-    if self._airtable_record and self._airtable_record['fields'].get(AudioFile._LABEL_ALBUM.title()):
-      default = self._airtable_record['fields'][AudioFile._LABEL_ALBUM.title()].rstrip()
+    if self._atd:
+      default = self._atd.album
     elif len(image_fileset) == 1:
       default = Path(image_fileset[0]).stem
     else:
-      default = self._old_tags[AudioFile._LABEL_ALBUM]
+      default = self.oldTags.album
 
-    self._new_tags[AudioFile._LABEL_ALBUM] = self._get_input(
-                        AudioFile._LABEL_ALBUM.title(),
-                        default)
+    self.newTags.album = self._get_input(AudioFile._LABEL_ALBUM.title(), default)
 
 
   def _get_new_tags_date(self):
     default = None
 
-    if self._airtable_record and self._airtable_record['fields'].get(AudioFile._LABEL_DATE.title()):
-      default = self._airtable_record['fields'][AudioFile._LABEL_DATE.title()]
+    if self._atd and self._atd.date:
+      default = self._atd.date
     else:
-      default = self._old_tags[AudioFile._LABEL_DATE]
-      
-    self._new_tags[AudioFile._LABEL_DATE] = self._get_input(
-                        AudioFile._LABEL_DATE.title(),
-                        default)
+      default = self.oldTags.date
+
+    self.newTags.date = self._get_input(AudioFile._LABEL_DATE.title(), default)
 
 
   def _get_new_tags_genre(self):
     default = None
 
-    if self._airtable_record and self._airtable_record['fields'].get(AudioFile._LABEL_GENRE.title()):
-      default = self._airtable_record['fields'][AudioFile._LABEL_GENRE.title()].rstrip()
+    if self._atd and self._atd.genre:
+      default = self._atd.genre
     else:
-      default = self._old_tags[AudioFile._LABEL_GENRE]
+      default = self.oldTags.genre
 
-    self._new_tags[AudioFile._LABEL_GENRE] = self._get_input(
-                        AudioFile._LABEL_GENRE.title(),
-                        default)
+    self.newTags.genre = self._get_input(AudioFile._LABEL_GENRE.title(), default)
 
 
   def _get_new_tags_comment(self):
     default = None
 
-    if self._airtable_record and self._airtable_record['fields'].get(AudioFile._LABEL_COMMENT.title()):
-      default = self._airtable_record['fields'][AudioFile._LABEL_COMMENT.title()].rstrip()
+    if self._atd and self._atd.comment:
+      default = self._atd.comment
     else:
-      default = self._old_tags[AudioFile._LABEL_COMMENT]
+      default = self.oldTags.comment
 
-    self._new_tags[AudioFile._LABEL_COMMENT] = self._get_input(
-                        AudioFile._LABEL_COMMENT.title(),
-                        default)
+    self.newTags.comment = self._get_input(AudioFile._LABEL_COMMENT.title(), default)
 
 
   def get_new_tags(self):
@@ -217,33 +356,49 @@ class AudioFile:
     self._get_new_tags_artist()
     self._get_new_tags_albumartist()
 
-    self._get_airtable_record()
+    self._atd = AirtableData(self.newTags.artist,self.newTags.title)
+    #print(self._atd)
+    #self._get_airtable_record()
     
     self._get_new_tags_album()
     self._get_new_tags_date()
     self._get_new_tags_genre()
     self._get_new_tags_comment()
 
-    if self._old_tags[AudioFile._LABEL_LYRICS]:
-      self._new_tags[AudioFile._LABEL_LYRICS] = self._old_tags[AudioFile._LABEL_LYRICS]
+    if self.oldTags and self.oldTags.lyrics:
+      self.newTags.lyrics = self.oldTags.lyrics
     else:
       print('Fetching lyrics ...')
       lyrics = None
-      az = azlyrics.Azlyrics(self._new_tags[AudioFile._LABEL_ARTIST],
-                             self._new_tags[AudioFile._LABEL_TITLE])
+      az = azlyrics.Azlyrics(self.newTags.artist, self.newTags.title)
       if az:
         raw_lyrics = az.get_lyrics()
-        lyrics = az.format_lyrics(raw_lyrics).lstrip().rstrip()
+        formatted_lyrics = az.format_lyrics(raw_lyrics).lstrip().rstrip()
 
-      self._new_tags[AudioFile._LABEL_LYRICS] = lyrics
+      self.newTags.lyrics = formatted_lyrics
 
-    self._new_tags[AudioFile._LABEL_ALBUM_ART] = self.get_new_album_art()
-
-    #print(self._new_tags)
+    self.newTags.album_art = self._get_new_album_art()
 
 
-  def get_new_album_art(self):
-    album_art_filename = self._new_tags[AudioFile._LABEL_ALBUM] + AudioFile._EXT_JPG
+  def _get_new_album_art(self):
+    album_art_filename = None
+
+    local_filename = self.newTags.album + AudioFile._EXT_JPG
+    print('local_filename = ' + local_filename)
+    print(AudioFile._LABEL_ALBUM_ART.title())
+    print(self._atd.album_art_url)
+    if Path(local_filename).exists():
+      album_art_filename = local_filename
+    elif self._atd and self._atd.album_art_url:
+      print('getting url from airtable')
+      album_art_url = self._atd.album_art_url
+      
+      print('Downloading album art from Airtable...')
+
+      r = requests.get(album_art_url)
+      open(local_filename, 'wb').write(r.content)
+      
+      album_art_filename = local_filename
 
     if not Path(album_art_filename).exists():
       return None
@@ -267,45 +422,31 @@ class AudioFile:
         return encoded_data.decode('ascii')
 
 
-  def _get_airtable_record(self):
-    title = self._new_tags[AudioFile._LABEL_TITLE]
-    artist = self._new_tags[AudioFile._LABEL_ARTIST]
-    
-    at = airtable.Airtable(tagit_config._AIRTABLE_BASE_ID_MUSIC,
-                           tagit_config._AIRTABLE_API_KEY)
-    
-    records = at.get(tagit_config._AIRTABLE_TABLE_TO_DOWNLOAD)
-    #print(records)
-    for record in records['records']:
-      if record['fields'][AudioFile._LABEL_ARTIST.title()] == artist and record['fields'][AudioFile._LABEL_TITLE.title()] == title:
-        self._airtable_record = record
-        #print(record)
-        return
-
-
   def get_old_tags(self):
-    self._old_tags[AudioFile._LABEL_ALBUM_ART] = []
-
-    for label in [
-      AudioFile._LABEL_TITLE,
-      AudioFile._LABEL_ALBUM,
-      AudioFile._LABEL_ARTIST,
-      AudioFile._LABEL_ALBUMARTIST,
-      AudioFile._LABEL_DATE,
-      AudioFile._LABEL_GENRE,
-      AudioFile._LABEL_COMMENT,
-      AudioFile._LABEL_LYRICS
-    ]:
-      if self._type == AudioFile._TYPE_MP3:
-        self._old_tags[label] = self.get_mp3_tag(AudioFile._LABELS_MP3[label])
-      else:
-        self._old_tags[label] = self.get_vorbis_tag(label)
+    if self._type == AudioFile._TYPE_MP3:
+      self.oldTags.title = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_TITLE])
+      self.oldTags.artist = self.get_mp3_tag(AudioFile._LABEL_ARTIST)
+      self.oldTags.album = self.get_mp3_tag(AudioFile._LABEL_ALBUM)
+      self.oldTags.albumartist = self.get_mp3_tag(AudioFile._LABEL_ALBUMARTIST)
+      self.oldTags.date = self.get_mp3_tag(AudioFile._LABEL_DATE)
+      self.oldTags.genre = self.get_mp3_tag(AudioFile._LABEL_GENRE)
+      self.oldTags.comment = self.get_mp3_tag(AudioFile._LABEL_COMMENT)
+      self.oldTags.lyrics = self.get_mp3_tag(AudioFile._LABEL_LYRICS)
+    else:
+      self.oldTags.title = self.get_vorbis_tag(AudioFile._LABEL_TITLE)
+      self.oldTags.artist = self.get_vorbis_tag(AudioFile._LABEL_ARTIST)
+      self.oldTags.album = self.get_vorbis_tag(AudioFile._LABEL_ALBUM)
+      self.oldTags.albumartist = self.get_vorbis_tag(AudioFile._LABEL_ALBUMARTIST)
+      self.oldTags.date = self.get_vorbis_tag(AudioFile._LABEL_DATE)
+      self.oldTags.genre = self.get_vorbis_tag(AudioFile._LABEL_GENRE)
+      self.oldTags.comment = self.get_vorbis_tag(AudioFile._LABEL_COMMENT)
+      self.oldTags.lyrics = self.get_vorbis_tag(AudioFile._LABEL_LYRICS)
 
     if self._type == AudioFile._TYPE_MP3:
-      self._old_tags[AudioFile._LABEL_ALBUM_ART] = self.mf.tags.getall('APIC')
+      self.oldTags.album_art = self.mf.tags.getall('APIC')
     else:
       for value in self.mf.tags.get('METADATA_BLOCK_PICTURE', []):
-        self._old_tags[AudioFile._LABEL_ALBUM_ART].append(value)
+        self.oldTags.album_art.append(value)
 
 
   def get_mp3_tag(self, name):
@@ -344,18 +485,18 @@ class AudioFile:
     self.mf.delete()
     self.mf.save()
 
-    self.mf.tags.add(mutagen.id3.TIT2(encoding=3, text=self._new_tags[AudioFile._LABEL_TITLE]))
-    self.mf.tags.add(mutagen.id3.TALB(encoding=3, text=self._new_tags[AudioFile._LABEL_ALBUM]))
-    self.mf.tags.add(mutagen.id3.TPE1(encodimg=1, text=self._new_tags[AudioFile._LABEL_ARTIST]))
-    self.mf.tags.add(mutagen.id3.TPE2(encodimg=1, text=self._new_tags[AudioFile._LABEL_ALBUMARTIST]))
-    self.mf.tags.add(mutagen.id3.TDRC(encoding=0, text=str(self._new_tags[AudioFile._LABEL_DATE])))  
-    self.mf.tags.add(mutagen.id3.TCON(encoding=0, text=self._new_tags[AudioFile._LABEL_GENRE]))
-    if self._new_tags[AudioFile._LABEL_COMMENT]:
-      self.mf.tags.add(mutagen.id3.COMM(encoding=1, lang='XXX', desc='', text=self._new_tags[AudioFile._LABEL_COMMENT]))
-    if self._new_tags[AudioFile._LABEL_LYRICS]:
-      self.mf.tags.add(mutagen.id3.TXXX(encoding=1, desc=AudioFile._LABEL_LYRICS, text=self._new_tags[AudioFile._LABEL_LYRICS]))
-    if self._new_tags[AudioFile._LABEL_ALBUM_ART]:
-      self.mf.tags.add(self._new_tags[AudioFile._LABEL_ALBUM_ART])
+    self.mf.tags.add(mutagen.id3.TIT2(encoding=3, text=self.newTags.title))
+    self.mf.tags.add(mutagen.id3.TALB(encoding=3, text=self.newTags.album))
+    self.mf.tags.add(mutagen.id3.TPE1(encodimg=1, text=self.newTags.artist))
+    self.mf.tags.add(mutagen.id3.TPE2(encodimg=1, text=self.newTags.albumartist))
+    self.mf.tags.add(mutagen.id3.TDRC(encoding=0, text=self.newTags.date))  
+    self.mf.tags.add(mutagen.id3.TCON(encoding=0, text=self.newTags.genre))
+    if self.newTags.comment:
+      self.mf.tags.add(mutagen.id3.COMM(encoding=1, lang='XXX', desc='', text=self.newTags.comment))
+    if self.newTags.lyrics:
+      self.mf.tags.add(mutagen.id3.TXXX(encoding=1, desc=AudioFile._LABEL_LYRICS, text=self.newTags.lyrics))
+    if self.newTags.album_art:
+      self.mf.tags.add(self.newTags.album_art)
     
     self.mf.save()
 
@@ -364,18 +505,18 @@ class AudioFile:
     self.mf.delete()
     self.mf.save()
 
-    self.mf[AudioFile._LABEL_TITLE] = self._new_tags[AudioFile._LABEL_TITLE]
-    self.mf[AudioFile._LABEL_ALBUM] = self._new_tags[AudioFile._LABEL_ALBUM]
-    self.mf[AudioFile._LABEL_ARTIST] = self._new_tags[AudioFile._LABEL_ARTIST]
-    self.mf[AudioFile._LABEL_ALBUMARTIST] = self._new_tags[AudioFile._LABEL_ALBUMARTIST]
-    self.mf[AudioFile._LABEL_DATE] = self._new_tags[AudioFile._LABEL_DATE]
-    self.mf[AudioFile._LABEL_GENRE] = self._new_tags[AudioFile._LABEL_GENRE]
-    if self._new_tags[AudioFile._LABEL_COMMENT]:
-      self.mf[AudioFile._LABEL_COMMENT] = self._new_tags[AudioFile._LABEL_COMMENT]
-    if self._new_tags[AudioFile._LABEL_LYRICS]:
-      self.mf[AudioFile._LABEL_LYRICS] = self._new_tags[AudioFile._LABEL_LYRICS]
-    if self._new_tags[AudioFile._LABEL_ALBUM_ART]:
-      self.mf['METADATA_BLOCK_PICTURE'] = self._new_tags[AudioFile._LABEL_ALBUM_ART]
+    self.mf[AudioFile._LABEL_TITLE] = self.newTags.title
+    self.mf[AudioFile._LABEL_ALBUM] = self.newTags.album
+    self.mf[AudioFile._LABEL_ARTIST] = self.newTags.artist
+    self.mf[AudioFile._LABEL_ALBUMARTIST] = self.newTags.albumartist
+    self.mf[AudioFile._LABEL_DATE] = self.newTags.date
+    self.mf[AudioFile._LABEL_GENRE] = self.newTags.genre
+    if self.newTags.comment:
+      self.mf[AudioFile._LABEL_COMMENT] = self.newTags.comment
+    if self.newTags.lyrics:
+      self.mf[AudioFile._LABEL_LYRICS] = self.newTags.lyrics
+    if self.newTags.album_art:
+      self.mf['METADATA_BLOCK_PICTURE'] = self.newTags.album_art
     
     self.mf.save()
 
@@ -392,11 +533,11 @@ class AudioFile:
     new_filename = None
 
     if self._type == AudioFile._TYPE_MP3:
-      new_filename = ''.join((self._new_tags[AudioFile._LABEL_TITLE], AudioFile._EXT_MP3))
+      new_filename = ''.join((self.newTags.title, AudioFile._EXT_MP3))
     elif self._type == AudioFile._TYPE_OGG_OPUS:
-      new_filename = ''.join((self._new_tags[AudioFile._LABEL_TITLE], AudioFile._EXT_OGG_OPUS))
+      new_filename = ''.join((self.newTags.title, AudioFile._EXT_OGG_OPUS))
     elif self._type == AudioFile._TYPE_OGG_VORBIS:
-      new_filename = ''.join((self._new_tags[AudioFile._LABEL_TITLE], AudioFile._EXT_OGG_VORBIS))
+      new_filename = ''.join((self.newTags.title, AudioFile._EXT_OGG_VORBIS))
 
     if new_filename:
       if self.filename != new_filename:
