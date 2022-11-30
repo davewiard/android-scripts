@@ -137,11 +137,17 @@ function runpy()
     src_path=~/git/android-scripts
     dst_path=~/bin
 
-    cp $src_path/$1 $dst_path/.		&& \
-	    chmod 700 $dst_path/$1	&& \
-	    clear			&& \
-	    DEBUG=1 $dst_path/$1 "${(@)@[2,-1]}"
+    script_name=$1
+    if [[ ${script_name%.py} == $script_name ]]; then
+	    script_name=${script_name}.py
+    fi
+
+    cp $src_path/$script_name $dst_path/.	&& \
+	    chmod 700 $dst_path/$script_name	&& \
+	    clear				&& \
+	    DEBUG=1 $dst_path/$script_name "${(@)@[2,-1]}"
 }
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
