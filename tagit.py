@@ -2,6 +2,7 @@
 
 import os
 import sys
+import re
 import logging
 import base64
 import ffmpeg
@@ -48,7 +49,7 @@ class Tags():
   def albumartist(self):
     return self._albumartist
 
-  @album.setter
+  @albumartist.setter
   def albumartist(self, value):
     self._albumartist = value
 
@@ -242,7 +243,7 @@ class AudioFile(Metadata):
 
   @type.setter
   def type(self, value):
-    print(value)
+    #print(value)
     if value not in [AudioFile._TYPE_MP3, AudioFile._TYPE_OGG_OPUS, AudioFile._TYPE_OGG_VORBIS]:
       raise ValueError('file type "' + value + '" not supported')
 
@@ -293,6 +294,8 @@ class AudioFile(Metadata):
       default = self.oldTags.artist
     else:
       default = artist_dir_name
+      if ', The' in default:
+        default = 'The ' + default.replace(', The', '')
 
     self.newTags.artist = self._get_input(AudioFile._LABEL_ARTIST.title(), default)
 
@@ -368,9 +371,10 @@ class AudioFile(Metadata):
     if self.oldTags and self.oldTags.lyrics:
       self.newTags.lyrics = self.oldTags.lyrics
     else:
-      print('Fetching lyrics ...')
+      print('Fetching lyrics for "' + self.newTags.title + '" by "' + self.newTags.artist + '" ...')
       lyrics = None
-      az = azlyrics.Azlyrics(self.newTags.artist, self.newTags.title)
+      artist = re.sub('^The ', '', self.newTags.artist)
+      az = azlyrics.Azlyrics(artist, self.newTags.title)
       if az:
         raw_lyrics = az.get_lyrics()
         formatted_lyrics = az.format_lyrics(raw_lyrics).lstrip().rstrip()
@@ -384,13 +388,13 @@ class AudioFile(Metadata):
     album_art_filename = None
 
     local_filename = self.newTags.album + AudioFile._EXT_JPG
-    print('local_filename = ' + local_filename)
-    print(AudioFile._LABEL_ALBUM_ART.title())
-    print(self._atd.album_art_url)
+    #print('local_filename = ' + local_filename)
+    #print(AudioFile._LABEL_ALBUM_ART.title())
+    #print(self._atd.album_art_url)
     if Path(local_filename).exists():
       album_art_filename = local_filename
     elif self._atd and self._atd.album_art_url:
-      print('getting url from airtable')
+      #print('getting url from airtable')
       album_art_url = self._atd.album_art_url
       
       print('Downloading album art from Airtable...')
@@ -504,6 +508,8 @@ class AudioFile(Metadata):
   def _update_vorbis_metadata(self):
     self.mf.delete()
     self.mf.save()
+    
+    #print(self.newTags.albumartist)
 
     self.mf[AudioFile._LABEL_TITLE] = self.newTags.title
     self.mf[AudioFile._LABEL_ALBUM] = self.newTags.album
@@ -522,7 +528,8 @@ class AudioFile(Metadata):
 
 
   def update_replaygain(self):
-    process = subprocess.run(['r128gain', self.filename])
+    print('Applying ReplayGain tags...')
+    process = subprocess.run(['r128gain', '-v', 'warning', self.filename])
     if process.returncode != 0:
       print('Failed to upsert replaygain tags')
 
