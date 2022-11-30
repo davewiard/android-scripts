@@ -120,10 +120,17 @@ alias ls='ls -aF --color=tty --group-directories-first'
 alias m='cd ~/storage/music'
 alias mf='/data/data/com.termux/files/home/sources/flac-1.3.3/src/metaflac/metaflac'
 alias py='python3'
+alias tagit='runpy tagit.py'
 alias vc='vorbiscomment'
 alias vg='vorbisgain'
 alias vgsc='vim ~/bin/gain-scanner'
 alias vgsh='vim ~/bin/gain-show'
+
+function m2o()
+{
+    ffmpeg -i $1 -c:a libopus ${1%.mp3}.opus &&	\
+	    rm -f $1
+}
 
 function runpy()
 {
