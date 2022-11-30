@@ -109,45 +109,8 @@ source $ZSH/oh-my-zsh.sh
 
 export PYTHONPATH=$HOME/git/android-scripts
 
-unalias gdt
-
-alias dm='cd ~/storage/downloads/Music'
-alias gdt='git difftool'
-alias gsc='gain-scanner'
-alias gsh='gain-show'
-alias ll='ls -alF --color=tty --group-directories-first'
-alias ls='ls -aF --color=tty --group-directories-first'
-alias m='cd ~/storage/music'
-alias mf='/data/data/com.termux/files/home/sources/flac-1.3.3/src/metaflac/metaflac'
-alias py='python3'
-alias tagit='runpy tagit.py'
-alias vc='vorbiscomment'
-alias vg='vorbisgain'
-alias vgsc='vim ~/bin/gain-scanner'
-alias vgsh='vim ~/bin/gain-show'
-
-function m2o()
-{
-    ffmpeg -i $1 -c:a libopus ${1%.mp3}.opus &&	\
-	    rm -f $1
-}
-
-function runpy()
-{
-    src_path=~/git/android-scripts
-    dst_path=~/bin
-
-    script_name=$1
-    if [[ ${script_name%.py} == $script_name ]]; then
-	    script_name=${script_name}.py
-    fi
-
-    cp $src_path/$script_name $dst_path/.	&& \
-	    chmod 700 $dst_path/$script_name	&& \
-	    clear				&& \
-	    DEBUG=1 $dst_path/$script_name "${(@)@[2,-1]}"
-}
+source ~/.zshrc-aliases
+source ~/.zshrc-functions
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
