@@ -53,19 +53,26 @@ class AudioFile(Metadata):
   def __init__(self, filename):
     self._type = None
     self._atd = None
+    self._mf = None
 
     self._oldTags = Tags()
     self._newTags = Tags()
 
     self.filename = filename
-    self.mf = mutagen.File(self.filename)
+    self._mf = mutagen.File(self.filename)
     self._set_file_type()
     self.get_old_tags()
 
 
   @property
+  def mf(self):
+    return self._mf
+
+
+  @property
   def oldTags(self):
     return self._oldTags
+
 
   @property
   def type(self):
@@ -81,7 +88,7 @@ class AudioFile(Metadata):
 
 
   def _set_file_type(self):
-    mft = self.mf.info.pprint().split(',')[0]
+    mft = self._mf.info.pprint().split(',')[0]
     logging.debug('detected file type = ' + mft)
     if mft == 'MPEG 1 layer 3':
       self._type = AudioFile._TYPE_MP3
@@ -114,7 +121,7 @@ class AudioFile(Metadata):
     if self._type == AudioFile._TYPE_MP3:
       self._oldTags.album_art = self.mf.tags.getall('APIC')
     else:
-      for value in self.mf.tags.get('METADATA_BLOCK_PICTURE', []):
+      for value in self._mf.tags.get('METADATA_BLOCK_PICTURE', []):
         self._oldTags.album_art.append(value)
 
 
@@ -138,7 +145,7 @@ class AudioFile(Metadata):
 
   def get_tag(self, name):
     try:
-      return self.mf.tags.get(name)
+      return self._mf.tags.get(name)
     except KeyError:
       return None    
 
