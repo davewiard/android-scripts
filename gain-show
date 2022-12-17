@@ -1,4 +1,0 @@
-#!/bin/bash
-
-echo "$1"
-vorbiscomment "$1" | grep -i 'replaygain'
