@@ -1,7 +1,7 @@
 from airtable import airtable
 from metadata import Metadata
 
-import tagit_config
+import tagit-config
 
 
 class AirtableData(Metadata):
