@@ -109,7 +109,7 @@ if __name__ == '__main__':
     convert_to_opus(audio_file_to_process, opus_filename)
 
     output_audiofile = AudioFile(opus_filename)
-    update_album_art(input_audiofile, output_audiofile)
+    # update_album_art(input_audiofile, output_audiofile)
 
     add_replaygain_tags(opus_filename)
 

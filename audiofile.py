@@ -1,29 +1,8 @@
 import logging
 import mutagen
 
+from metadata import Metadata
 from tags import Tags
-
-class Metadata():
-
-  _FIELD_TITLE = 'Title'
-  _FIELD_ARTIST = 'Artist'
-  _FIELD_ALBUM = 'Album'
-  _FIELD_DATE = 'Date'
-  _FIELD_GENRE = 'Genre'
-  _FIELD_COMMENT = 'Comment'
-  _FIELD_ALBUM_ART = 'Album Art'
-  _FIELD_URL = 'url'
-
-  _TYPE_MP3 = 'mp3'
-  _TYPE_OGG_OPUS = 'opus'
-  _TYPE_OGG_VORBIS = 'vorbis'
-
-  _EXT_JPG = '.jpg'
-  _EXT_MP3 = '.mp3'
-  _EXT_OGG_OPUS = '.opus'
-  _EXT_OGG_VORBIS = '.ogg'
-  
-  _MIME_IMAGE_JPEG = 'image/jpeg'
 
 
 class AudioFile(Metadata):
@@ -101,13 +80,13 @@ class AudioFile(Metadata):
   def get_old_tags(self):
     if self._type == AudioFile._TYPE_MP3:
       self._oldTags.title = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_TITLE])
-      self._oldTags.artist = self.get_mp3_tag(AudioFile._LABEL_ARTIST)
-      self._oldTags.album = self.get_mp3_tag(AudioFile._LABEL_ALBUM)
-      self._oldTags.albumartist = self.get_mp3_tag(AudioFile._LABEL_ALBUMARTIST)
-      self._oldTags.date = self.get_mp3_tag(AudioFile._LABEL_DATE)
-      self._oldTags.genre = self.get_mp3_tag(AudioFile._LABEL_GENRE)
-      self._oldTags.comment = self.get_mp3_tag(AudioFile._LABEL_COMMENT)
-      self._oldTags.lyrics = self.get_mp3_tag(AudioFile._LABEL_LYRICS)
+      self._oldTags.artist = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_ARTIST])
+      self._oldTags.album = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_ALBUM])
+      self._oldTags.albumartist = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_ALBUMARTIST])
+      self._oldTags.date = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_DATE])
+      self._oldTags.genre = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_GENRE])
+      self._oldTags.comment = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_COMMENT])
+      self._oldTags.lyrics = self.get_mp3_tag(AudioFile._LABELS_MP3[AudioFile._LABEL_LYRICS])
     else:
       self._oldTags.title = self.get_vorbis_tag(AudioFile._LABEL_TITLE)
       self._oldTags.artist = self.get_vorbis_tag(AudioFile._LABEL_ARTIST)

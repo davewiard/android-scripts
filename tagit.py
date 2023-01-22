@@ -367,13 +367,19 @@ class AudioFile(Metadata):
     self._get_new_tags_date()
     self._get_new_tags_genre()
     self._get_new_tags_comment()
+    
+    artist = None
+    if ';' in self.newTags.artist:
+      artist = self.newTags.albumartist
+    else:
+      artist = re.sub('^The ', '', self.newTags.artist)
 
     if self.oldTags and self.oldTags.lyrics:
       self.newTags.lyrics = self.oldTags.lyrics
     else:
-      print('Fetching lyrics for "' + self.newTags.title + '" by "' + self.newTags.artist + '" ...')
+      print('Fetching lyrics for "' + self.newTags.title + '" by "' + artist + '" ...')
       lyrics = None
-      artist = re.sub('^The ', '', self.newTags.artist)
+      #artist = re.sub('^The ', '', self.newTags.artist)
       az = azlyrics.Azlyrics(artist, self.newTags.title)
       if az:
         raw_lyrics = az.get_lyrics()
@@ -587,6 +593,7 @@ if __name__ == '__main__':
 
   audio_files_to_process = get_audio_fileset(sys.argv[1:])
   for audio_file_to_process in audio_files_to_process:
+    logging.info('Processing "%s"' % audio_file_to_process)
     audiofile = AudioFile(audio_file_to_process)
     audiofile.get_new_tags()
     audiofile.update_metadata()
