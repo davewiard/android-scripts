@@ -9,6 +9,7 @@ import tagit_config
 
 
 class TagitSpotify:
+
   _artist = None
   _album = None
   _albumartist = None
@@ -89,30 +90,30 @@ class TagitSpotify:
     self._title = title
 
 
-  def set_metadata(self):
+  def get_metadata(self):
     self._metadata = self._sp.search(q='artist:' + self._artist + ' track:' + self._title, 
                                      type='track', market='US', limit=1)
     pprint(self._metadata)
 
-    self._set_metadata_album()
-    self._set_metadata_albumartist()
-    self._set_metadata_date()
-    self._set_metadata_album_art_uri()
+    self._get_metadata_album()
+    self._get_metadata_albumartist()
+    self._get_metadata_date()
+    self._get_metadata_album_art_uri()
 
 
-  def _set_metadata_album(self):
+  def _get_metadata_album(self):
     self._album = self._metadata['tracks']['items'][0]['album']['name']
 
 
-  def _set_metadata_albumartist(self):
+  def _get_metadata_albumartist(self):
     self._albumartist = self._metadata['tracks']['items'][0]['album']['artists'][0]['name']
 
 
-  def _set_metadata_date(self):
+  def _get_metadata_date(self):
     self._date = self._metadata['tracks']['items'][0]['album']['release_date'].split('-')[0]
 
 
-  def _set_metadata_album_art_uri(self):
+  def _get_metadata_album_art_uri(self):
     self._album_art_uri = self._metadata['tracks']['items'][0]['album']['images'][0]['url']
 
 
@@ -121,7 +122,7 @@ if __name__ == '__main__':
   title = 'Black'
 
   ts = TagitSpotify(artist, title)
-  ts.set_metadata()
+  ts.get_metadata()
   print('album        : ' +  ts.album)
   print('albumartist  : ' + ts.albumartist)
   print('date         : ' + ts.date)
