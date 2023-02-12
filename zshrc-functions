@@ -1,4 +1,27 @@
 #
+# c2j
+# convert cr2 file(s) to jpg
+#
+function c2j()
+{
+    if [[ $# > 0 ]]; then
+        for f in $*; do
+            printf "Converting '$f'\n"
+            printf "        to '${f%.*}.jpg'\n"
+            convert "$f" "${f%.*}.jpg"
+        done
+    else
+        printf "Converting all cr2 files\n"
+        for f in *.cr2 *.CR2; do
+            printf "Converting '$f'\n"
+            printf "        to '${f%.*}.jpg'\n"
+            convert "$f" "${f%.*}.jpg"
+        done
+    fi
+}
+
+
+#
 # m2o
 # convert mp3 file to libopus
 #
