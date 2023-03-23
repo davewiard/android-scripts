@@ -108,6 +108,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 export PYTHONPATH=$HOME/git/android-scripts
+export PATH=$PATH:/data/data/com.termux/files/usr/libexec
 
 source ~/.zshrc-aliases
 source ~/.zshrc-functions
