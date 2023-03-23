@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 
-import sys
-import os
 import subprocess
 
-# gmail:5:ncgm
-# facebook:1:ncfb
 
 packages = [
   'com.netease.eve.en',
