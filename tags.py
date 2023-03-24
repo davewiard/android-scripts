@@ -4,6 +4,7 @@ class Tags:
     self._albumartist = None
     self._album_art = []
     self._artist = None
+    self._comment = None
     self._date = None
     self._genre = None
     self._lyrics = None
@@ -40,6 +41,14 @@ class Tags:
   @artist.setter
   def artist(self, value):
     self._artist = value
+
+  @property
+  def comment(self):
+    return self._comment;
+
+  @comment.setter
+  def comment(self, value):
+    self._comment = value
 
   @property
   def date(self):
