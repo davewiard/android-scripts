@@ -7,68 +7,68 @@ import json
 
 
 packageNames = [
-  'com.formagrid.airtable',                           # Airtable
-  'com.amazon.mp3',                                   # Amazon Music
-  'com.apple.android.music',                          # Apple Music
-  'com.authy.authy',                                  # Authy
-  'com.fillobotto.mp3tagger',                         # AutomaTag
-  'org.becu.androidapp',                              # BECU
-  'blockpuzzle.jewelgames.jewelslegend',              # Block Puzzle Legend
-  'com.sec.android.app.camera',                       # Camera
-  'com.android.chrome',                               # Chrome
-  'com.citi.citimobile',                              # Citi
-  'com.cnn.mobile.android.phone',                     # CNN
-  'com.coinbase.android',                             # Coinbase
-  'com.samsung.android.app.contacts',                 # Contacts
-  'com.discord',                                      # Discord
-  'com.disney.disneyplus',                            # Disney+
-  'app.edwardjones.mobile',                           # Edward Jones
-  'com.netease.eve.en',                               # EVE Echoes
-  'com.facebook.katana',                              # Facebook
-  'com.facebook.orca',                                # Facebook Messenger
-  'com.square_enix.android.googleplay.FFVII',         # Final Fantasy VII
-  'com.fitbit.FitbitMobile',                          # Fitbit
-  'com.kajda.fuelio',                                 # Fuelio
-  'com.google.android.gm',                            # Gmail
-  'com.playdemic.golf.android',                       # Golf Clash
-  'com.golfnow.android.teetimes',                     # GolfNow
-  'com.contorra.golfpad',                             # Golf Pad
-  'gonemad.gmmp',                                     # GoneMAD Music Player
-  'com.google.android.apps.authenticator2',           # Google Authenticator
-  'com.android.vending',                              # Google Play
-  'com.hbo.hbonow',                                   # HBO MAX
-  'com.hulu.plus',                                    # hulu
-  'com.imdb.mobile',                                  # IMDb
-  'com.kunzisoft.keepass.free',                       # Keepass
-  'com.microsoft.mahjong',                            # Mahjong
-  'com.samsung.android.messaging',                    # Messages
-  'co.peeksoft.stocks',                               # MSP
-  'com.netflix.mediaclient',                          # Netflix
-  'com.okta.android.mobile.oktamobile',               # Okta Mobile
-  'com.okta.android.auth',                            # Okta Verify
-  'com.headcode.outgroceries',                        # OurGroceries
-  'com.pagerduty.android',                            # PagerDuty
-  'com.paypal.android.p2pmobile',                     # PayPal
-  'com.samsung.android.dialer',                       # Phone
-  'com.politico.android',                             # POLITICO
-  'com.amazon.avod.thirdpartyclient',                 # Prime Video
-  'com.robinhood.android',                            # Robinhood
-  'com.roku.remote',                                  # Roku
-  'com.schwab.mobile.retirement',                     # Schwab
-  'com.solium.shareworks',                            # Shareworks
-  'com.Slack',                                        # Slack
-  'pl.solidexplorer2',                                # Solid Explorer
-  'com.strava',                                       # Strava
-  'com.sillykat.eve.sweet',                           # SWEET
-  'net.dinglisch.android.taskerm',                    # Tasker
-  'com.termux',                                       # Termux
-  'com.fivemobile.thescore',                          # theScore
-  'com.ultimatesoftware.ultipromobile',               # UKG Pro
-  'com.venmo',                                        # Venmo
-  'com.wire',                                         # Wire
-  'com.peoplefun.wordcross',                          # Wordscapes
-  'com.peoplefun.wordsearch',                         # Word Search
-  'com.yahoo.mobile.client.android.fantasyfootball'   # Yahoo Fantasy
+  ('com.formagrid.airtable', 'airtable'),                          # Airtable
+  ('com.amazon.mp3', 'amazonmu'),                                  # Amazon Music
+  ('com.apple.android.music', 'applemus'),                         # Apple Music
+  ('com.authy.authy', 'authy'),                                    # Authy
+  ('com.fillobotto.mp3tagger','automata'),                         # AutomaTag
+  ('org.becu.androidapp', 'becu'),                                 # BECU
+  ('blockpuzzle.jewelgames.jewelslegend', 'blockpuz'),             # Block Puzzle Legend
+  ('com.sec.android.app.camera', 'camera'),                        # Camera
+  ('com.android.chrome', 'chrome'),                                # Chrome
+  ('com.citi.citimobile', 'citi'),                                 # Citi
+  ('com.cnn.mobile.android.phone', 'cnn'),                         # CNN
+  ('com.coinbase.android', 'coinbase'),                            # Coinbase
+  ('com.samsung.android.app.contacts', 'contacts'),                # Contacts
+  ('com.discord', 'discord'),                                      # Discord
+  ('com.disney.disneyplus', 'disneypl'),                           # Disney+
+  ('app.edwardjones.mobile', 'edwardjo'),                          # Edward Jones
+  ('com.netease.eve.en', 'eveechoe'),                              # EVE Echoes
+  ('com.facebook.katana', 'facebook'),                             # Facebook
+  ('com.facebook.orca', 'messenge'),                               # Facebook Messenger
+  ('com.square_enix.android.googleplay.FFVII', 'ffvii'),           # Final Fantasy VII
+  ('com.fitbit.FitbitMobile', 'fitbit'),                           # Fitbit
+  ('com.kajda.fuelio', 'fuelio'),                                  # Fuelio
+  ('com.google.android.gm', 'gmail'),                              # Gmail
+  ('com.playdemic.golf.android', 'golfclas'),                      # Golf Clash
+  ('com.golfnow.android.teetimes', 'golfnow'),                     # GolfNow
+  ('com.contorra.golfpad', 'golfpad'),                             # Golf Pad
+  ('gonemad.gmmp', 'gonemad'),                                     # GoneMAD Music Player
+  ('com.google.android.apps.authenticator2', 'googleau'),          # Google Authenticator
+  ('com.android.vending', 'googlepl'),                             # Google Play
+  ('com.hbo.hbonow', 'hbomax'),                                    # HBO MAX
+  ('com.hulu.plus', 'hulu'),                                       # hulu
+  ('com.imdb.mobile', 'imdb'),                                     # IMDb
+  ('com.kunzisoft.keepass.free', 'keepass'),                       # Keepass
+  ('com.microsoft.mahjong', 'mahjong'),                            # Mahjong
+  ('com.samsung.android.messaging', 'messages'),                   # Messages
+  ('co.peeksoft.stocks', 'msp'),                                   # MSP
+  ('com.netflix.mediaclient', 'netflix'),                          # Netflix
+  ('com.okta.android.mobile.oktamobile', 'oktamobi'),              # Okta Mobile
+  ('com.okta.android.auth', 'oktaveri'),                           # Okta Verify
+  ('com.headcode.outgroceries', 'ourgroce'),                       # OurGroceries
+  ('com.pagerduty.android', 'pagerdut'),                           # PagerDuty
+  ('com.paypal.android.p2pmobile', 'paypal'),                      # PayPal
+  ('com.samsung.android.dialer', 'phone'),                         # Phone
+  ('com.politico.android', 'politico'),                            # POLITICO
+  ('com.amazon.avod.thirdpartyclient', 'primevid'),                # Prime Video
+  ('com.robinhood.android', 'robinhoo'),                           # Robinhood
+  ('com.roku.remote', 'roku'),                                     # Roku
+  ('com.schwab.mobile.retirement', 'schwab'),                      # Schwab
+  ('com.solium.shareworks', 'sharewor'),                           # Shareworks
+  ('com.Slack', 'slack'),                                          # Slack
+  ('pl.solidexplorer2', 'solidexp'),                               # Solid Explorer
+  ('com.strava', 'strava'),                                        # Strava
+  ('com.sillykat.eve.sweet', 'sweet'),                             # SWEET
+  ('net.dinglisch.android.taskerm', 'tasker'),                     # Tasker
+  ('com.termux', 'termux'),                                        # Termux
+  ('com.fivemobile.thescore', 'thescore'),                         # theScore
+  ('com.ultimatesoftware.ultipromobile', 'ukgpro'),                # UKG Pro
+  ('com.venmo', 'venmo'),                                          # Venmo
+  ('com.wire', 'wire'),                                            # Wire
+  ('com.peoplefun.wordcross', 'wordscap'),                         # Wordscapes
+  ('com.peoplefun.wordsearch', 'wordsear'),                        # Word Search
+  ('com.yahoo.mobile.client.android.fantasyfootball', 'yahoofan')  # Yahoo Fantasy
 ]
 
 
@@ -95,11 +95,13 @@ if __name__ == '__main__':
 
   notificationCounts = []
 
-  for packageName in packageNames:
+  for packageName, klwpVarName in packageNames:
     count = get_count(packageName, data)
     logging.info(packageName)
+    logging.info(klwpVarName)
     logging.info(count)
 
-    notificationCounts.append({packageName: count})
+    notificationCounts.append(packageName + ':' + klwpVarName + ':' + str(count))
 
-  logging.info(notificationCounts)
+  output = { "notifications": notificationCounts }
+  print(json.dumps(output))
