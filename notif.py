@@ -10,6 +10,7 @@ packageNames = [
   ('com.aetna.aetnahealth', 'aetna'),                              # Aetna
   ('com.formagrid.airtable', 'airtable'),                          # Airtable
   ('com.alaskaairljnes.android', 'alaskaai'),                      # Alaska Airlines
+  ('com.amazon.dee.app', 'amazonal'),                              # Amazon Alexa
   ('com.amazon.mp3', 'amazonmu'),                                  # Amazon Music
   ('com.amazon.mShop.android.shopping', 'amazonsh'),               # Amazon Shopping
   ('com.aa.android', 'american'),                                  # American Airlines
@@ -43,19 +44,24 @@ packageNames = [
   ('gonemad.gmmp', 'gonemad'),                                     # GoneMAD Music Player
   ('com.google.android.apps.authenticator2', 'googleau'),          # Google Authenticator
   ('com.google.android.apps.maps', 'googlema'),                    # Google Maps
+  ('com.nest.android', 'googlene'),                                # Google Nest
   ('com.android.vending', 'googlepl'),                             # Google Play
   ('com.hawaiianairlines.app', 'hawaiian'),                        # Hawaiian Airlines
   ('com.hbo.hbonow', 'hbomax'),                                    # HBO MAX
+  ('com.hikvision.hikconnect', 'hikconne'),                        # Hik-Connect
   ('com.thehomedepot', 'homedepo'),                                # Home Depot
   ('com.hulu.plus', 'hulu'),                                       # hulu
   ('com.imdb.mobile', 'imdb'),                                     # IMDb
+  ('com.tplink.kasa_android', 'kasa'),                             # Kasa
   ('com.kunzisoft.keepass.free', 'keepass'),                       # Keepass
   ('com.lowes.android', 'lowes'),                                  # Lowe's
   ('com.lyft.android', 'lyft'),                                    # Lyft
   ('com.microsoft.mahjong', 'mahjong'),                            # Mahjong
   ('com.samsung.android.messaging', 'messages'),                   # Messages
+  ('com.homeautomation.graber', 'motoriza'),                       # Motorization
   ('co.peeksoft.stocks', 'msp'),                                   # MSP
   ('epic.mychart.android', 'mychart'),                             # MyChart
+  ('com.chamberlain.android.liftmastee.myq', 'myq'),               # myQ
   ('com.netflix.mediaclient', 'netflix'),                          # Netflix
   ('com.okta.android.mobile.oktamobile', 'oktamobi'),              # Okta Mobile
   ('com.okta.android.auth', 'oktaveri'),                           # Okta Verify
@@ -83,6 +89,7 @@ packageNames = [
   ('com.ups.android.mobile', 'ups'),                               # UPS
   ('com.venmo', 'venmo'),                                          # Venmo
   ('com.vsp.mobile', 'vsp'),                                       # VSP
+  ('com.belkin.wemoandroid', 'wemo'),                              # Wemo
   ('com.wire', 'wire'),                                            # Wire
   ('com.peoplefun.wordcross', 'wordscap'),                         # Wordscapes
   ('com.peoplefun.wordsearch', 'wordsear'),                        # Word Search
