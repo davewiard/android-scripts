@@ -7,6 +7,7 @@ import json
 
 
 packageNames = [
+  ('com.aetna.aetnahealth', 'aetna'),                              # Aetna
   ('com.formagrid.airtable', 'airtable'),                          # Airtable
   ('com.alaskaairljnes.android', 'alaskaai'),                      # Alaska Airlines
   ('com.amazon.mp3', 'amazonmu'),                                  # Amazon Music
@@ -54,11 +55,13 @@ packageNames = [
   ('com.microsoft.mahjong', 'mahjong'),                            # Mahjong
   ('com.samsung.android.messaging', 'messages'),                   # Messages
   ('co.peeksoft.stocks', 'msp'),                                   # MSP
+  ('epic.mychart.android', 'mychart'),                             # MyChart
   ('com.netflix.mediaclient', 'netflix'),                          # Netflix
   ('com.okta.android.mobile.oktamobile', 'oktamobi'),              # Okta Mobile
   ('com.okta.android.auth', 'oktaveri'),                           # Okta Verify
   ('com.headcode.outgroceries', 'ourgroce'),                       # OurGroceries
   ('com.pagerduty.android', 'pagerdut'),                           # PagerDuty
+  ('com.payflex.hhmobile', 'payflex'),                             # PayFlex
   ('com.paypal.android.p2pmobile', 'paypal'),                      # PayPal
   ('com.samsung.android.dialer', 'phone'),                         # Phone
   ('com.politico.android', 'politico'),                            # POLITICO
@@ -79,6 +82,7 @@ packageNames = [
   ('com.ultimatesoftware.ultipromobile', 'ukgpro'),                # UKG Pro
   ('com.ups.android.mobile', 'ups'),                               # UPS
   ('com.venmo', 'venmo'),                                          # Venmo
+  ('com.vsp.mobile', 'vsp'),                                       # VSP
   ('com.wire', 'wire'),                                            # Wire
   ('com.peoplefun.wordcross', 'wordscap'),                         # Wordscapes
   ('com.peoplefun.wordsearch', 'wordsear'),                        # Word Search
