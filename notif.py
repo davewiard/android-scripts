@@ -50,6 +50,7 @@ packageNames = [
   ('com.imdb.mobile', 'imdb'),                                     # IMDb
   ('com.kunzisoft.keepass.free', 'keepass'),                       # Keepass
   ('com.lowes.android', 'lowes'),                                  # Lowe's
+  ('com.lyft.android', 'lyft'),                                    # Lyft
   ('com.microsoft.mahjong', 'mahjong'),                            # Mahjong
   ('com.samsung.android.messaging', 'messages'),                   # Messages
   ('co.peeksoft.stocks', 'msp'),                                   # MSP
@@ -74,6 +75,7 @@ packageNames = [
   ('net.dinglisch.android.taskerm', 'tasker'),                     # Tasker
   ('com.termux', 'termux'),                                        # Termux
   ('com.fivemobile.thescore', 'thescore'),                         # theScore
+  ('com.ubercab', 'uber'),                                         # Uber
   ('com.ultimatesoftware.ultipromobile', 'ukgpro'),                # UKG Pro
   ('com.ups.android.mobile', 'ups'),                               # UPS
   ('com.venmo', 'venmo'),                                          # Venmo
