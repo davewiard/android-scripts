@@ -38,7 +38,7 @@ packageNames = [
   ('com.contorra.golfpad', 'golfpad'),                             # Golf Pad
   ('gonemad.gmmp', 'gonemad'),                                     # GoneMAD Music Player
   ('com.google.android.apps.authenticator2', 'googleau'),          # Google Authenticator
-  ('com.google.android.apps.maps', 'maps'),                        # Google Maps
+  ('com.google.android.apps.maps', 'googlema'),                    # Google Maps
   ('com.android.vending', 'googlepl'),                             # Google Play
   ('com.hbo.hbonow', 'hbomax'),                                    # HBO MAX
   ('com.thehomedepot', 'homedepo'),                                # Home Depot
