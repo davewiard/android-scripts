@@ -80,6 +80,7 @@ packageNames = [
   ('com.wire', 'wire'),                                            # Wire
   ('com.peoplefun.wordcross', 'wordscap'),                         # Wordscapes
   ('com.peoplefun.wordsearch', 'wordsear'),                        # Word Search
+  ('com.wyndhamhotelgroup.wyndhamrewards', 'wyndham'),             # Wyndham
   ('com.yahoo.mobile.client.android.fantasyfootball', 'yahoofan')  # Yahoo Fantasy
 ]
 
