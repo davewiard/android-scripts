@@ -8,8 +8,10 @@ import json
 
 packageNames = [
   ('com.formagrid.airtable', 'airtable'),                          # Airtable
+  ('com.alaskaairljnes.android', 'alaskaai'),                      # Alaska Airlines
   ('com.amazon.mp3', 'amazonmu'),                                  # Amazon Music
   ('com.amazon.mShop.android.shopping', 'amazonsh'),               # Amazon Shopping
+  ('com.aa.android', 'american'),                                  # American Airlines
   ('com.apple.android.music', 'applemus'),                         # Apple Music
   ('com.authy.authy', 'authy'),                                    # Authy
   ('com.fillobotto.mp3tagger','automata'),                         # AutomaTag
@@ -22,6 +24,7 @@ packageNames = [
   ('com.cnn.mobile.android.phone', 'cnn'),                         # CNN
   ('com.coinbase.android', 'coinbase'),                            # Coinbase
   ('com.samsung.android.app.contacts', 'contacts'),                # Contacts
+  ('com.delta.mobile.android', 'deltaair'),                        # Delta Airlines
   ('com.discord', 'discord'),                                      # Discord
   ('com.disney.disneyplus', 'disneypl'),                           # Disney+
   ('app.edwardjones.mobile', 'edwardjo'),                          # Edward Jones
@@ -40,6 +43,7 @@ packageNames = [
   ('com.google.android.apps.authenticator2', 'googleau'),          # Google Authenticator
   ('com.google.android.apps.maps', 'googlema'),                    # Google Maps
   ('com.android.vending', 'googlepl'),                             # Google Play
+  ('com.hawaiianairlines.app', 'hawaiian'),                        # Hawaiian Airlines
   ('com.hbo.hbonow', 'hbomax'),                                    # HBO MAX
   ('com.thehomedepot', 'homedepo'),                                # Home Depot
   ('com.hulu.plus', 'hulu'),                                       # hulu
