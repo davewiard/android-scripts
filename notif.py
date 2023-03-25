@@ -9,11 +9,13 @@ import json
 packageNames = [
   ('com.formagrid.airtable', 'airtable'),                          # Airtable
   ('com.amazon.mp3', 'amazonmu'),                                  # Amazon Music
+  ('com.amazon.mShop.android.shopping', 'amazonsh'),               # Amazon Shopping
   ('com.apple.android.music', 'applemus'),                         # Apple Music
   ('com.authy.authy', 'authy'),                                    # Authy
   ('com.fillobotto.mp3tagger','automata'),                         # AutomaTag
   ('org.becu.androidapp', 'becu'),                                 # BECU
   ('blockpuzzle.jewelgames.jewelslegend', 'blockpuz'),             # Block Puzzle Legend
+  ('com.bridgecitytools', 'bridgeci'),                             # Bridge City Tools
   ('com.sec.android.app.camera', 'camera'),                        # Camera
   ('com.android.chrome', 'chrome'),                                # Chrome
   ('com.citi.citimobile', 'citi'),                                 # Citi
@@ -26,6 +28,7 @@ packageNames = [
   ('com.netease.eve.en', 'eveechoe'),                              # EVE Echoes
   ('com.facebook.katana', 'facebook'),                             # Facebook
   ('com.facebook.orca', 'messenge'),                               # Facebook Messenger
+  ('com.fedex.ida.android', 'fedex'),                              # FedEx
   ('com.square_enix.android.googleplay.FFVII', 'ffvii'),           # Final Fantasy VII
   ('com.fitbit.FitbitMobile', 'fitbit'),                           # Fitbit
   ('com.kajda.fuelio', 'fuelio'),                                  # Fuelio
@@ -37,9 +40,11 @@ packageNames = [
   ('com.google.android.apps.authenticator2', 'googleau'),          # Google Authenticator
   ('com.android.vending', 'googlepl'),                             # Google Play
   ('com.hbo.hbonow', 'hbomax'),                                    # HBO MAX
+  ('com.thehomedepot', 'homedepo'),                                # Home Depot
   ('com.hulu.plus', 'hulu'),                                       # hulu
   ('com.imdb.mobile', 'imdb'),                                     # IMDb
   ('com.kunzisoft.keepass.free', 'keepass'),                       # Keepass
+  ('com.lowes.android', 'lowes'),                                  # Lowe's
   ('com.microsoft.mahjong', 'mahjong'),                            # Mahjong
   ('com.samsung.android.messaging', 'messages'),                   # Messages
   ('co.peeksoft.stocks', 'msp'),                                   # MSP
@@ -56,6 +61,7 @@ packageNames = [
   ('com.roku.remote', 'roku'),                                     # Roku
   ('com.schwab.mobile.retirement', 'schwab'),                      # Schwab
   ('com.solium.shareworks', 'sharewor'),                           # Shareworks
+  ('com.shopify.arrive', 'shop'),                                  # Shop
   ('com.Slack', 'slack'),                                          # Slack
   ('pl.solidexplorer2', 'solidexp'),                               # Solid Explorer
   ('com.strava', 'strava'),                                        # Strava
@@ -64,6 +70,7 @@ packageNames = [
   ('com.termux', 'termux'),                                        # Termux
   ('com.fivemobile.thescore', 'thescore'),                         # theScore
   ('com.ultimatesoftware.ultipromobile', 'ukgpro'),                # UKG Pro
+  ('com.ups.android.mobile', 'ups'),                               # UPS
   ('com.venmo', 'venmo'),                                          # Venmo
   ('com.wire', 'wire'),                                            # Wire
   ('com.peoplefun.wordcross', 'wordscap'),                         # Wordscapes
