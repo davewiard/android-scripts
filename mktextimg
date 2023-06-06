@@ -1,0 +1,8 @@
+#!/data/data/com.termux/files/usr/bin/bash
+
+left="#0CD6FA"
+right="#00DDB3"
+
+convert -pointsize 250 -font Blastine-personal-use -background none label:"The Mariposa Mission"	\
+	\( +clone -sparse-color Barycentric "0,%h $left %w,0 $right" \) -compose In -composite		\
+	example.psd
