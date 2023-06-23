@@ -1,13 +1,15 @@
 unalias gdt
 
+alias cat='bat'
 alias dm='cd ~/storage/downloads/Music'
 alias gdt='git difftool'
-alias ll='ls -alF --color=tty --group-directories-first'
-alias ls='ls -aF --color=tty --group-directories-first'
+alias ll='lsd -alF --group-directories-first'
+alias ls='lsd -aF --group-directories-first'
 alias m='cd ~/storage/music'
 alias mf='/data/data/com.termux/files/home/sources/flac-1.3.3/src/metaflac/metaflac'
 alias toopus='runpy to-opus'
 alias py='python3'
+alias sd='~/start-debian.sh'
 alias tagit='runpy tagit'
 alias vc='vorbiscomment'
 alias vg='vorbisgain'
