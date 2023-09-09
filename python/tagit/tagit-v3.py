@@ -17,6 +17,7 @@ import wiard
 
 from airtabledata import AirtableData
 from audiofile import AudioFile
+from memento import MementoData
 from tagit_azlyrics import TagitAzlyrics
 from tagit_spotify import TagitSpotify
 
@@ -155,6 +156,8 @@ def remove_input_file(input_audiofile, output_audiofile):
 def set_output_audiofile_tags(output_audiofile, artist, title, spotify_data, airtable_data, azlyrics_data):
   output_audiofile._newTags.artist = artist        
   output_audiofile._newTags.title = title
+  
+  print(spotify_data)
 
   if spotify_data.album:
     output_audiofile._newTags.album = spotify_data.album
@@ -231,10 +234,12 @@ if __name__  == '__main__':
     artist = get_artist(file_artist)
     title = get_title(file_title)
 
-    airtable_data = AirtableData(artist, title)
+    memento_data = MementoData(artist, title)
+    exit()
+    #airtable_data = AirtableData(artist, title)
 
     spotify_data = TagitSpotify(artist, title)
-    spotify_data.get_metadata()
+    spotify_data._get_metadata()
 
     azlyrics_data = TagitAzlyrics(artist, title)
     azlyrics_data.get_lyrics()

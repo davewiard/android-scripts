@@ -198,8 +198,8 @@ class TagitSpotify:
 
 
 if __name__ == '__main__':
-  artist = 'J Boog'
-  title = 'Sunshine Girl'
+  artist = 'Falling In Reverse'
+  title = 'The Drug In Me Is Reimagined'
 
   ts = TagitSpotify(artist, title)
   print('artist       : ' + ts.artist)
