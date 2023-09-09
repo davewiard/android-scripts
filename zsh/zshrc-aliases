@@ -1,7 +1,7 @@
 unalias gdt
 
 alias cat='bat'
-alias cs='NODE_OPTIONS="--require /data/data/com.termux/files/home/git/android-scripts/android-as-linux.js" code-server'
+alias cs='NODE_OPTIONS="--require /data/data/com.termux/files/home/git/android-scripts/config/code-server/android-as-linux.js" code-server'
 alias dm='cd ~/storage/downloads/Music'
 alias gdt='git difftool'
 alias ll='lsd -alF --group-directories-first'

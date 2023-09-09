@@ -38,16 +38,22 @@ function m2o()
 #
 function runpy()
 {
-    src_path=~/git/android-scripts
+    src_path=~/git/android-scripts/python
     dst_path=~/bin
 
     script_name=$1
     if [[ ${script_name%.py} == $script_name ]]; then
 	    script_name=${script_name}.py
     fi
+    
+    script_path=$(find $src_path -name $script_name -type f 2>/dev/null)
+    if [[ ! -e $script_path ]]; then
+        print "$script_name not found\n"
+        return
+    fi
 
-    cp $src_path/$script_name $dst_path/.  && \
-	    chmod 700 $dst_path/$script_name     && \
-	    clear				                        && \
+    cp $script_path $dst_path/.         && \
+	    chmod 700 $dst_path/$script_name  && \
+	    clear				                     && \
 	    DEBUG=1 $dst_path/$script_name "${(@)@[2,-1]}"
 }
