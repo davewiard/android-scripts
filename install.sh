@@ -34,6 +34,8 @@ function links_config()
   create_link $GIT_BASE_PATH/zsh/zshrc-aliases $HOME/.zshrc-aliases
   create_link $GIT_BASE_PATH/zsh/zshrc-functions $HOME/.zshrc-functions
   create_link $GIT_BASE_PATH/zsh/p10k.zsh $HOME/.p10k.zsh
+
+  create_link $GIT_BASE_PATH/conf/tmux/tmux.conf $HOME/.tmux.conf
 }
 
 # install and configure oh my zsh if it doesn't already appear to be installed
