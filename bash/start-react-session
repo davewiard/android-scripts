@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+WORK_DIR="~/sites/$1"
+SESSION="$1"
+
+url='http://localhost:8080/?workspace=/data/data/com.termux/files/home/.local/share/code-server/User/Workspaces/sites.code-workspace'
+
+tmux kill-session -t $SESSION
+tmux new-session -d -s $SESSION
+tmux split-window -h -t $SESSION
+tmux split-window -h -t $SESSION
+tmux send-keys -t ${SESSION}:0.0 "cd $WORK_DIR && npm start" Enter
+tmux send-keys -t ${SESSION}:0.1 "cs" Enter
+tmux send-keys -t ${SESSION}:0.2 "termux-open-url $url && sleep 10 && exit" Enter
+tmux attach-session -t $SESSION

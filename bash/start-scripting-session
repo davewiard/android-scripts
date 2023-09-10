@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+WORK_DIR="~/"
+SESSION="${1:-scripting}"
+
+url='http://localhost:8080/?workspace=/data/data/com.termux/files/home/.local/share/code-server/User/Workspaces/android-scripts.code-workspace'
+
+tmux kill-session -t $SESSION
+tmux new-session -d -s $SESSION
+tmux split-window -h -t $SESSION
+tmux resize-pane -R -x 25% -t ${SESSION}:0.1
+tmux split-window -v -t $SESSION
+tmux send-keys -t ${SESSION}:0.1 "cs" Enter
+tmux send-keys -t ${SESSION}:0.2 "sleep 2 && termux-open-url $url && sleep 10 && exit" Enter
+tmux attach-session -t $SESSION

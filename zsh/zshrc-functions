@@ -45,7 +45,31 @@ function runpy()
     if [[ ${script_name%.py} == $script_name ]]; then
 	    script_name=${script_name}.py
     fi
-    
+
+    script_path=$(find $src_path -name $script_name -type f 2>/dev/null)
+    if [[ ! -e $script_path ]]; then
+        print "$script_name not found\n"
+        return
+    fi
+
+    cp $script_path $dst_path/.         && \
+	    chmod 700 $dst_path/$script_name  && \
+	    clear				                     && \
+	    DEBUG=1 $dst_path/$script_name "${(@)@[2,-1]}"
+}
+
+
+#
+# runsh
+# wrapper function to more easily run shell scripts in termux
+#
+function runsh()
+{
+    src_path=~/git/android-scripts/bash
+    dst_path=~/bin
+
+    script_name=$1
+
     script_path=$(find $src_path -name $script_name -type f 2>/dev/null)
     if [[ ! -e $script_path ]]; then
         print "$script_name not found\n"
