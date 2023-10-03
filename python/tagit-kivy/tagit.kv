@@ -1,0 +1,187 @@
+<DarkButton@Button>:
+  background_color: (238/255, 232/255, 213/255, 1)  # base2
+  background_normal: ''
+  bold: True
+  color: (88/255, 110/255, 117/255, 1)  # base01
+  font_name: 'Roboto'
+  font_size: 50
+  size_hint: (1, None)
+
+<DarkLabel@Label>:
+  bold: True
+  font_name: 'Roboto'
+  font_size: 50
+  padding_y: dp(30)
+  size_hint_x: None
+  width: 350
+
+<EmptyLabel@Label>:
+  bold: True
+  font_name: 'Roboto'
+  font_size: 50
+  padding_y: dp(30)
+  size_hint_x: None
+  width: 30
+
+<DarkTextInput@TextInput>:
+  font_name: 'Roboto'
+  font_size: 50
+  multiline:  False
+  padding_x: 20
+  padding_y: [self.height / 2.0 - (self.line_height / 2.0) * len(self._lines), 0]
+  size_y: 60
+  size_hint: (1, None)
+
+<DarkTextArea@TextInput>:
+  font_name: 'Roboto'
+  font_size: 50
+  height: 150
+  multiline:  True
+  size_hint: (1, None)
+
+<Resizing_GridLayout@GridLayout>:
+  cols: 1
+  row_force_default: True
+  spacing: 20
+  foo: [self.rows_minimum.update({i: x.height}) for i, x in enumerate(reversed(list(self.children)))]
+
+<ResizingRow_GridLayout@GridLayout>:
+  cols: 1
+  height: sum([c.height for c in self.children])
+  padding_y: 10
+
+<TagItLayoutLandscape>:
+  rows: 1
+  canvas.before:
+    Color:
+      rgba: (0/255, 43/255, 54/255, 1)  # base03
+    Rectangle:
+      pos: self.pos
+      size: self.size
+
+  StackLayout:
+    padding: 10
+    spacing: 10
+    size_hint: .12, 1
+
+    DarkButton:
+      text: 'Open'
+
+    DarkButton:
+      text: 'Save'
+
+    DarkButton:
+      text: 'Convert'
+
+    DarkButton:
+      text: 'Spotify'
+
+    DarkButton:
+      text: 'Lyrics'
+
+    DarkButton:
+      text: 'ReplayGain'
+
+    DarkButton:
+      text: 'Clear Tags'
+
+    DarkButton:
+      text: 'Exit'
+      on_press: app.stop()
+
+  Resizing_GridLayout:
+    ResizingRow_GridLayout:
+      BoxLayout:
+        DarkLabel:
+          text: 'Empty Row'
+
+    ResizingRow_GridLayout:
+      BoxLayout:
+        DarkLabel:
+          text: 'Artist'
+        DarkTextInput:
+          write_tab: False
+          hint_text: 'Artist'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      BoxLayout:
+        DarkLabel:
+          text: 'Album Artist'
+        DarkTextInput:
+          write_tab: False
+          hint_text: 'Album Artist'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      BoxLayout:
+        DarkLabel:
+          text: 'Album'
+        DarkTextInput:
+          write_tab: False
+          hint_text: 'Album'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      BoxLayout:
+        DarkLabel:
+          text: 'Title'
+        DarkTextInput:
+          write_tab: False
+          hint_text: 'Title'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      BoxLayout:
+        DarkLabel:
+          text: 'Date'
+        DarkTextInput:
+          write_tab: False
+          hint_text: 'Date'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      row_force_default: True
+      row_default_height: 150
+      BoxLayout:
+        DarkLabel:
+          text: 'Comment'
+        DarkTextArea:
+          write_tab: False
+          hint_text: 'Comment'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      row_force_default: True
+      row_default_height: 200
+      BoxLayout:
+        DarkLabel:
+          size_hint_y: None
+          height: 150
+          text: 'Lyrics'
+        DarkTextArea:
+          write_tab: False
+          hint_text: 'Lyrics'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      row_force_default: True
+      row_default_height: 600
+      BoxLayout:
+        DarkLabel:
+          size_hint_y: None
+          height: 500
+          text: 'Album Art'
+        AsyncImage:
+          fit_mode: "contain"
+          source: "https://i.scdn.co/image/ab67616d0000b273f2ba4db0d179a61a0615ca11"
+          size_hint: (None, None)
+          height: 500
+          width: 500
