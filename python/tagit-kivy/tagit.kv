@@ -9,6 +9,7 @@
 
 <DarkLabel@Label>:
   bold: True
+  color: [253/255, 246/255, 227/255, 1]
   font_name: 'Roboto'
   font_size: 50
   padding_y: dp(30)
@@ -17,6 +18,7 @@
 
 <EmptyLabel@Label>:
   bold: True
+  color: [253/255, 246/255, 227/255, 1]
   font_name: 'Roboto'
   font_size: 50
   padding_y: dp(30)
@@ -50,7 +52,7 @@
   height: sum([c.height for c in self.children])
   padding_y: 10
 
-<TagItLayoutLandscape>:
+<Root>:
   rows: 1
   canvas.before:
     Color:
@@ -65,24 +67,30 @@
     size_hint: .12, 1
 
     DarkButton:
+      on_release: root.show_load()
       text: 'Open'
 
     DarkButton:
+      id: button_save
+      disabled: True
       text: 'Save'
 
     DarkButton:
-      text: 'Convert'
-
-    DarkButton:
+      id: button_spotify
+      disabled: True
+      on_release: root.get_spotify_data()
       text: 'Spotify'
 
     DarkButton:
+      id: button_lyrics
+      disabled: True
+      on_release: root.get_lyrics()
       text: 'Lyrics'
 
     DarkButton:
-      text: 'ReplayGain'
-
-    DarkButton:
+      id: button_clear_tags
+      disabled: True
+      on_release: root.debug_text_input()
       text: 'Clear Tags'
 
     DarkButton:
@@ -93,13 +101,23 @@
     ResizingRow_GridLayout:
       BoxLayout:
         DarkLabel:
-          text: 'Empty Row'
+          text: ''
+        Label:
+          id: label_filename
+          bold: False
+          font_name: 'Roboto'
+          font_size: 45
+          padding_y: dp(30)
+          size_hint_x: 1
+          text: ''
 
     ResizingRow_GridLayout:
       BoxLayout:
         DarkLabel:
+          id: label_artist
           text: 'Artist'
         DarkTextInput:
+          id: input_artist
           write_tab: False
           hint_text: 'Artist'
         EmptyLabel:
@@ -108,8 +126,10 @@
     ResizingRow_GridLayout:
       BoxLayout:
         DarkLabel:
+          id: label_albumartist
           text: 'Album Artist'
         DarkTextInput:
+          id: input_albumartist
           write_tab: False
           hint_text: 'Album Artist'
         EmptyLabel:
@@ -118,8 +138,10 @@
     ResizingRow_GridLayout:
       BoxLayout:
         DarkLabel:
+          id: label_album
           text: 'Album'
         DarkTextInput:
+          id: input_album
           write_tab: False
           hint_text: 'Album'
         EmptyLabel:
@@ -128,8 +150,10 @@
     ResizingRow_GridLayout:
       BoxLayout:
         DarkLabel:
+          id: label_title
           text: 'Title'
         DarkTextInput:
+          id: input_title
           write_tab: False
           hint_text: 'Title'
         EmptyLabel:
@@ -138,10 +162,25 @@
     ResizingRow_GridLayout:
       BoxLayout:
         DarkLabel:
+          id: label_date
           text: 'Date'
         DarkTextInput:
+          id: input_date
           write_tab: False
           hint_text: 'Date'
+        EmptyLabel:
+          text: ''
+
+    ResizingRow_GridLayout:
+      BoxLayout:
+        DarkLabel:
+          id: label_genre
+          text: 'Genre'
+        DarkTextInput:
+          id: input_genre
+          write_tab: False
+          hint_text: 'Genre'
+          on_text: root.on_change_genre()
         EmptyLabel:
           text: ''
 
@@ -150,8 +189,10 @@
       row_default_height: 150
       BoxLayout:
         DarkLabel:
+          id: label_comment
           text: 'Comment'
         DarkTextArea:
+          id: input_comment
           write_tab: False
           hint_text: 'Comment'
         EmptyLabel:
@@ -162,10 +203,12 @@
       row_default_height: 200
       BoxLayout:
         DarkLabel:
+          id: label_lyrics
           size_hint_y: None
           height: 150
           text: 'Lyrics'
         DarkTextArea:
+          id: input_lyrics
           write_tab: False
           hint_text: 'Lyrics'
         EmptyLabel:
@@ -173,15 +216,40 @@
 
     ResizingRow_GridLayout:
       row_force_default: True
-      row_default_height: 600
+      row_default_height: 500
       BoxLayout:
         DarkLabel:
+          id: label_album_art
           size_hint_y: None
-          height: 500
+          height: 400
           text: 'Album Art'
         AsyncImage:
+          id: album_art
           fit_mode: "contain"
-          source: "https://i.scdn.co/image/ab67616d0000b273f2ba4db0d179a61a0615ca11"
+          source: ""
           size_hint: (None, None)
-          height: 500
-          width: 500
+          height: 400
+          width: 400
+
+
+<LoadDialog>:
+  BoxLayout:
+    size: root.size
+    pos: root.pos
+    orientation: 'vertical'
+    FileChooserIconView:
+      id: filechooser
+
+    BoxLayout:
+      size_hint_y: None
+      height: 30
+      padding: 20
+      spacing: 20
+
+      DarkButton:
+        text: 'Dismiss'
+        on_release: root.cancel()
+
+      DarkButton:
+        text: 'Open'
+        on_release: root.load(filechooser.path, filechooser.selection)
