@@ -21,3 +21,7 @@ class Metadata():
   _EXT_OGG_VORBIS = '.ogg'
   
   _MIME_IMAGE_JPEG = 'image/jpeg'
+
+  @property
+  def MIME_IMAGE_JPEG(self):
+    return self._MIME_IMAGE_JPEG
