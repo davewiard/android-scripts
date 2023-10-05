@@ -6,7 +6,7 @@ from tags import Tags
 
 
 class AudioFile(Metadata):
-  
+
   _LABEL_TITLE = 'TITLE'
   _LABEL_ALBUM = 'ALBUM'
   _LABEL_ARTIST = 'ARTIST'
@@ -27,8 +27,7 @@ class AudioFile(Metadata):
     _LABEL_COMMENT: 'COMM',
     _LABEL_LYRICS: 'TXXX:LYRICS'
   }
-
-
+  
   def __init__(self, filename):
     self._type = None
     self._atd = None
@@ -54,6 +53,11 @@ class AudioFile(Metadata):
 
 
   @property
+  def newTags(self):
+    return self._newTags
+
+
+  @property
   def type(self):
     return self._type
 
@@ -64,6 +68,51 @@ class AudioFile(Metadata):
       raise ValueError('file type "' + value + '" not supported')
 
     self._type = value
+
+
+  @property
+  def LABEL_TITLE(self):
+    return self._LABEL_TITLE
+
+
+  @property
+  def LABEL_ALBUM(self):
+    return self._LABEL_ALBUM
+
+
+  @property
+  def LABEL_ARTIST(self):
+    return self._LABEL_ARTIST
+
+
+  @property
+  def LABEL_ALBUMARTIST(self):
+    return self._LABEL_ALBUMARTIST
+
+
+  @property
+  def LABEL_DATE(self):
+    return self._LABEL_DATE
+
+
+  @property
+  def LABEL_GENRE(self):
+    return self._LABEL_GENRE
+
+
+  @property
+  def LABEL_COMMENT(self):
+    return self._LABEL_COMMENT
+
+
+  @property
+  def LABEL_LYRICS(self):
+    return self._LABEL_LYRICS
+
+
+  @property
+  def LABEL_ALBUM_ART(self):
+    return self._LABEL_ALBUM_ART
 
 
   def _set_file_type(self):
@@ -122,6 +171,8 @@ class AudioFile(Metadata):
         return tag[0]
     except KeyError:
       return None
+
+    return None
 
 
   def get_tag(self, name):
