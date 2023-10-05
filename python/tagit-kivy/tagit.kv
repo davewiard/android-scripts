@@ -1,10 +1,14 @@
 <DarkButton@Button>:
-  background_color: (238/255, 232/255, 213/255, 1)  # base2
+  background_color: [238/255, 232/255, 213/255, 1]  # base2
+  #background_color: solarized.Solarized.get_color(Solarized.BASE2, Solarized.DECIMAL)
+  background_down: ''
   background_normal: ''
   bold: True
-  color: (88/255, 110/255, 117/255, 1)  # base01
+  color: [101/255, 123/255, 131/255, 1]  # base00
   font_name: 'Roboto'
   font_size: 50
+  on_press: self.background_color = [253/255, 246/255, 227/255, 1]  # base3
+  on_release: self.background_color = [238/255, 232/255, 213/255, 1]  # base2
   size_hint: (1, None)
 
 <DarkLabel@Label>:
@@ -12,13 +16,17 @@
   color: [253/255, 246/255, 227/255, 1]
   font_name: 'Roboto'
   font_size: 50
+  halign: 'right'
+  padding_x: 20
   padding_y: dp(30)
   size_hint_x: None
+  text_size: self.size
+  valign: 'middle'
   width: 350
 
 <EmptyLabel@Label>:
   bold: True
-  color: [253/255, 246/255, 227/255, 1]
+  color: [253/255, 246/255, 227/255, 1]  # base3
   font_name: 'Roboto'
   font_size: 50
   padding_y: dp(30)
@@ -26,6 +34,8 @@
   width: 30
 
 <DarkTextInput@TextInput>:
+  background_color: [253/255, 246/255, 227/255, 1] if self.focus else [238/255, 232/255, 213/255, 1]
+  color: [101/255, 123/255, 131/255, 1]  # base00
   font_name: 'Roboto'
   font_size: 50
   multiline:  False
@@ -35,10 +45,13 @@
   size_hint: (1, None)
 
 <DarkTextArea@TextInput>:
+  background_color: [253/255, 246/255, 227/255, 1] if self.focus else [238/255, 232/255, 213/255, 1]
+  color: [101/255, 123/255, 131/255, 1]  # base00
   font_name: 'Roboto'
   font_size: 50
   height: 150
   multiline:  True
+  padding_x: 20
   size_hint: (1, None)
 
 <Resizing_GridLayout@GridLayout>:
@@ -67,12 +80,14 @@
     size_hint: .12, 1
 
     DarkButton:
+      id: button_open
       on_release: root.show_load()
       text: 'Open'
 
     DarkButton:
       id: button_save
       disabled: True
+      on_release: root.save_tags()
       text: 'Save'
 
     DarkButton:
@@ -90,12 +105,13 @@
     DarkButton:
       id: button_clear_tags
       disabled: True
-      on_release: root.debug_text_input()
+      on_release: root.clear_tags()
       text: 'Clear Tags'
 
     DarkButton:
       text: 'Exit'
-      on_press: app.stop()
+      on_release: self.background_color = [253/255, 246/255, 227/255, 1]  # base3
+      on_release: app.stop()
 
   Resizing_GridLayout:
     ResizingRow_GridLayout:
@@ -120,6 +136,7 @@
           id: input_artist
           write_tab: False
           hint_text: 'Artist'
+          on_text: root.on_change_input(self, root.ids.label_artist)
         EmptyLabel:
           text: ''
 
@@ -132,6 +149,7 @@
           id: input_albumartist
           write_tab: False
           hint_text: 'Album Artist'
+          on_text: root.on_change_input(self, root.ids.label_albumartist)
         EmptyLabel:
           text: ''
 
@@ -144,6 +162,7 @@
           id: input_album
           write_tab: False
           hint_text: 'Album'
+          on_text: root.on_change_input(self, root.ids.label_album)
         EmptyLabel:
           text: ''
 
@@ -156,6 +175,7 @@
           id: input_title
           write_tab: False
           hint_text: 'Title'
+          on_text: root.on_change_input(self, root.ids.label_title)
         EmptyLabel:
           text: ''
 
@@ -168,6 +188,7 @@
           id: input_date
           write_tab: False
           hint_text: 'Date'
+          on_text: root.on_change_input(self, root.ids.label_date)
         EmptyLabel:
           text: ''
 
@@ -180,7 +201,7 @@
           id: input_genre
           write_tab: False
           hint_text: 'Genre'
-          on_text: root.on_change_genre()
+          on_text: root.on_change_input(self, root.ids.label_genre)
         EmptyLabel:
           text: ''
 
@@ -195,6 +216,7 @@
           id: input_comment
           write_tab: False
           hint_text: 'Comment'
+          on_text: root.on_change_input(self, root.ids.label_comment)
         EmptyLabel:
           text: ''
 
@@ -207,6 +229,7 @@
           size_hint_y: None
           height: 150
           text: 'Lyrics'
+          on_text: root.on_change_input(self, root.ids.label_lyrics)
         DarkTextArea:
           id: input_lyrics
           write_tab: False
@@ -225,8 +248,8 @@
           text: 'Album Art'
         AsyncImage:
           id: album_art
-          fit_mode: "contain"
-          source: ""
+          fit_mode: 'contain'
+          source: ''
           size_hint: (None, None)
           height: 400
           width: 400
