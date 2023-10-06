@@ -85,12 +85,6 @@
       text: 'Open'
 
     DarkButton:
-      id: button_save
-      disabled: True
-      on_release: root.save_tags()
-      text: 'Save'
-
-    DarkButton:
       id: button_spotify
       disabled: True
       on_release: root.get_spotify_data()
@@ -109,6 +103,12 @@
       text: 'Clear Tags'
 
     DarkButton:
+      id: button_save
+      disabled: True
+      on_release: root.save_tags()
+      text: 'Save'
+
+    DarkButton:
       text: 'Exit'
       on_release: self.background_color = [253/255, 246/255, 227/255, 1]  # base3
       on_release: app.stop()
@@ -121,6 +121,7 @@
         Label:
           id: label_filename
           bold: False
+          color: [253/255, 246/255, 227/255, 1]  # base3
           font_name: 'Roboto'
           font_size: 45
           padding_y: dp(30)
@@ -230,6 +231,16 @@
           height: 150
           text: 'Lyrics'
           on_text: root.on_change_input(self, root.ids.label_lyrics)
+        #ScrollView:
+        #  id: scrlv
+        #  size_hint: (1, None)
+        #  DarkTextArea:
+        #    id: input_lyrics
+        #    write_tab: False
+        #    hint_text: 'Lyrics'
+        #    size_hint: 1, None
+        #    height: max( (len(self._lines)+1) * self.line_height, scrlv.height)
+        #    on_text: self.height = max( (len(self._lines)+1) * self.line_height, scrlv.height)
         DarkTextArea:
           id: input_lyrics
           write_tab: False

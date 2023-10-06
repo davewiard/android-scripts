@@ -107,26 +107,37 @@ class Root(GridLayout):
 
 
   def save_tags(self):
-    self._audiofile.mf[self._audiofile.LABEL_TITLE] = self.ids.input_title.text
-    self._audiofile.mf[self._audiofile.LABEL_ALBUM] = self.ids.input_album.text
-    self._audiofile.mf[self._audiofile.LABEL_ARTIST] = self.ids.input_artist.text
-    self._audiofile.mf[self._audiofile.LABEL_ALBUMARTIST] = self.ids.input_albumartist.text
-    self._audiofile.mf[self._audiofile.LABEL_DATE] = self.ids.input_date.text
-    self._audiofile.mf[self._audiofile.LABEL_GENRE] = self.ids.input_genre.text
-    if self.ids.input_comment.text:
+    if self.ids.input_title.text != self._audiofile.oldTags.title:
+      self._audiofile.mf[self._audiofile.LABEL_TITLE] = self.ids.input_title.text
+    if self.ids.input_album.text != self._audiofile.oldTags.album:
+      self._audiofile.mf[self._audiofile.LABEL_ALBUM] = self.ids.input_album.text
+    if self.ids.input_artist.text != self._audiofile.oldTags.artist:
+      self._audiofile.mf[self._audiofile.LABEL_ARTIST] = self.ids.input_artist.text
+    if self.ids.input_albumartist.text != self._audiofile.oldTags.albumartist:
+      self._audiofile.mf[self._audiofile.LABEL_ALBUMARTIST] = self.ids.input_albumartist.text
+    if self.ids.input_date.text != self._audiofile.oldTags.date:
+      self._audiofile.mf[self._audiofile.LABEL_DATE] = self.ids.input_date.text
+    if self.ids.input_genre.text != self._audiofile.oldTags.genre:
+      self._audiofile.mf[self._audiofile.LABEL_GENRE] = self.ids.input_genre.text
+    if self.ids.input_comment.text and self.ids.input_comment.text != self._audiofile.oldTags.comment:
       self._audiofile.mf[self._audiofile.LABEL_COMMENT] = self.ids.input_comment.text
-    if self.ids.input_lyrics.text:
+    if self.ids.input_lyrics.text and self.ids.input_lyrics.text != self._audiofile.oldTags.lyrics:
       self._audiofile.mf[self._audiofile.LABEL_LYRICS] = self.ids.input_lyrics.text
 
-    with open(self._spotify_data.album_art_filename, 'rb') as albumart:
-      picture = mutagen.flac.Picture()
-      picture.data = albumart.read()
-      picture.type = mutagen.id3.PictureType.COVER_FRONT
-      picture.mime = self._audiofile.MIME_IMAGE_JPEG
-      encoded_data = base64.b64encode(picture.write())
-      album_art = encoded_data.decode('ascii')
-    if album_art:
-      self._audiofile.mf['METADATA_BLOCK_PICTURE'] = album_art
+    #
+    # if the tag already exists leave it as-is
+    # if local file was created by retrieving spotify data, apply image to tags
+    #
+    if not self._audiofile.mf['METADATA_BLOCK_PICTURE'] and self._spotify_data.album_art_filename:
+      with open(self._spotify_data.album_art_filename, 'rb') as albumart:
+        picture = mutagen.flac.Picture()
+        picture.data = albumart.read()
+        picture.type = mutagen.id3.PictureType.COVER_FRONT
+        picture.mime = self._audiofile.MIME_IMAGE_JPEG
+        encoded_data = base64.b64encode(picture.write())
+        album_art = encoded_data.decode('ascii')
+      if album_art:
+        self._audiofile.mf['METADATA_BLOCK_PICTURE'] = album_art
 
     self._audiofile.mf.save()
 
@@ -155,8 +166,12 @@ class Root(GridLayout):
       self.ids.input_title.text = self._audiofile.oldTags.title
     if self._audiofile.oldTags.date:
       self.ids.input_date.text = self._audiofile.oldTags.date
+    if self._audiofile.oldTags.genre:
+      self.ids.input_genre.text = self._audiofile.oldTags.genre
     if self._audiofile.oldTags.comment:
       self.ids.input_comment.text = self._audiofile.oldTags.comment
+    if self._audiofile.oldTags.lyrics:
+      self.ids.input_lyrics.text = self._audiofile.oldTags.lyrics
 
     if self._audiofile.oldTags.album_art:
       # TODO read the album_art 'ascii' data and convert to binary data
