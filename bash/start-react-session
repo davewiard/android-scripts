@@ -9,7 +9,7 @@ tmux kill-session -t $SESSION
 tmux new-session -d -s $SESSION
 tmux split-window -h -t $SESSION
 tmux split-window -h -t $SESSION
-tmux send-keys -t ${SESSION}:0.0 "cd $WORK_DIR && npm start" Enter
+tmux send-keys -t ${SESSION}:0.0 "cd $WORK_DIR && npm run build && npm run dev" Enter
 tmux send-keys -t ${SESSION}:0.1 "cs" Enter
 tmux send-keys -t ${SESSION}:0.2 "termux-open-url $url && sleep 10 && exit" Enter
 tmux attach-session -t $SESSION
