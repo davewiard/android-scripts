@@ -3,6 +3,7 @@ unalias gdt
 alias cat='bat'
 alias cs='NODE_OPTIONS="--require /data/data/com.termux/files/home/git/android-scripts/config/code-server/android-as-linux.js" code-server'
 alias dm='cd ~/storage/downloads/Music'
+alias gap='cd ~/git/android-scripts/python'
 alias gdt='git difftool'
 alias ll='lsd -alF --group-directories-first'
 alias ls='lsd -aF --group-directories-first'
@@ -14,3 +15,4 @@ alias tm='tmux new-session \; split-window -h \; attach'
 alias ua='pkg upgrade'
 
 alias inadash='runsh start-react-session inadash'
+
