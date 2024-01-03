@@ -13,6 +13,10 @@ alias sd='~/start-debian.sh'
 alias tagit='runpy tagit'
 alias tm='tmux new-session \; split-window -h \; attach'
 alias ua='pkg upgrade'
+alias vz='vim ~/.zshrc'
+alias vza='vim ~/.zshrc-aliases'
+alias vzf='vim ~/.zshrc-functions'
+alias webp2png='for f in *.webp; do convert "$f" "${f%.webp}.png"; done'
 
 alias inadash='runsh start-react-session inadash'
 
