@@ -20,7 +20,9 @@ class TagitAzlyrics:
 
   @artist.setter
   def artist(self, value):
-    self._artist = value
+    # sanitize artist for azlyrics, can't have special characters or azlyrics chokes
+    self._artist = self.sanitize_value(value)
+    print(self._artist)
 
 
   @property
@@ -41,13 +43,18 @@ class TagitAzlyrics:
   @title.setter
   def title(self, value):
     # sanitize title for azlyrics, can't have special characters or azlyrics chokes
-    self._title = re.sub('[!:?\'()\[\]]', '', value)
+    sanitized = self.sanitize_value(value)
+    sanitized = re.sub(r'^The ', r'', sanitized)
+    self._title = sanitized
 
 
   def __init__(self, artist, title):
-    self._artist = artist
+    self.artist = artist
     self.title = title
 
+
+  def sanitize_value(self, value):
+    return re.sub(r'[-&*!\':\(\)\[\].]', '', value)
 
   def get_lyrics(self):
     print('Fetching lyrics for "' + self._title + '" by "' + self._artist + '" ...')

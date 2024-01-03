@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os
 import re
 import logging
 import requests
@@ -13,6 +14,8 @@ import tagit_config
 
 
 class TagitSpotify:
+  
+  _path = None
 
   _artist = None
   _album = None
@@ -23,6 +26,7 @@ class TagitSpotify:
   _title = None
   
   _album_data = None
+  _all_album_data = None
   
   _search_artist = None
 
@@ -43,6 +47,11 @@ class TagitSpotify:
   @property
   def album_data(self):
     return self._album_data
+
+
+  @property
+  def all_album_data(self):
+    return self._all_album_data
 
 
   @property
@@ -105,19 +114,22 @@ class TagitSpotify:
     self._date = value
 
 
-  def __init__(self, artist, title):
+  def __init__(self, artist, title, path):
     client_credentials_manager = SpotifyClientCredentials(client_id=tagit_config._SPOTIFY_CLIENT_ID, client_secret=tagit_config._SPOTIFY_CLIENT_SECRET)
     self._sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
     self._search_artist = artist
     self._title = title
     
+    self._path = path
+    print(self._path)
+    
     self._get_metadata()
 
 
   def _get_album_art(self):
     if self._album:
-      self._album_art_filename = re.sub('[:/]', '-', self._album) + '.jpg'
+      self._album_art_filename = os.path.join(self._path, re.sub(r'[:/\?]', r'-', self._album) + '.jpg')
       r = requests.get(self._album_art_uri)
       open(self._album_art_filename, 'wb').write(r.content)
 
@@ -126,7 +138,7 @@ class TagitSpotify:
     logging.info('Fetching Spotify data...')
 
     # Spotify search doesn't appear to work correctly with at least some special characters included 
-    pattern = '[\'*?]'
+    pattern = r'[\'\*\?]'
     search_artist = re.sub(pattern, '', self._search_artist)
     search_title = re.sub(pattern, '', self._title)
 
@@ -151,19 +163,21 @@ class TagitSpotify:
         print(item['album']['album_type'])
         print(self._title)
         print(item['name'])
-        if item['album']['album_type'] == 'album' and item['name'] == self._title:
+        if item['album']['album_type'] == 'album' or item['album']['album_type'] == 'single':
           albums.append(item['album'])
 
-      if len(albums) == 0:
-        for item in self._metadata['tracks']['items']:
-          if item['album']['album_type'] == 'single' and item['name'] == self._title:
-            albums.append(item['album'])
+      #if len(albums) == 0:
+      #  for item in self._metadata['tracks']['items']:
+      #    if item['album']['album_type'] == 'single' and item['name'] == self._title:
+      #      albums.append(item['album'])
 
       print('-----')
       pprint(albums)
       print('-----')
       if len(albums) > 0:
         self._album_data = albums[0]
+
+      self._all_album_data = albums
     except:
       pass
 
