@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+infile=$1
+outfile=${infile%.*}.opus
+
+if [[ ! -f "$infile" ]]; then
+  printf "File not found: $infile\n"
+  exit
+fi
+
+if [[ "$infile" == $outfile ]]; then
+  printf "Not converting opus file to opus format\n"
+  exit
+fi
+
+tagit-cvt.py "$infile"	&&	\
+  tagit-rpg.py "$outfile"
