@@ -33,6 +33,16 @@ function m2o()
 
 
 #
+# resize
+# resize an image to 720 width
+#
+function resize
+{
+    convert $1 -resize 720x $1.jpg
+}
+
+
+#
 # runpy
 # wrapper function to more easily run Python scripts in termux
 #
